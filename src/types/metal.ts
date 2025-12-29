@@ -6,8 +6,8 @@ export interface Metal {
   name: string;
   symbol: string;
   category: MetalCategory;
-  price: number; // USD per troy ounce (or ton for industrial)
-  priceUnit: 'oz' | 'ton' | 'kg';
+  price: number; // USD per unit (oz, lb, ton, or kg)
+  priceUnit: 'oz' | 'lb' | 'ton' | 'kg';
   change24h: number; // percentage
   change7d: number; // percentage
   marketCap: number; // USD

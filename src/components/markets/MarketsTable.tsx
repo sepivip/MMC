@@ -86,6 +86,29 @@ export function MarketsTable({ metals, onMetalClick, onWatchlistToggle }: Market
     return `$${price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}/${unit}`;
   };
 
+  const convertToKgPrice = (price: number, unit: string): number => {
+    switch (unit) {
+      case 'oz':
+        // 1 troy ounce = 0.0311035 kg
+        return price / 0.0311035;
+      case 'lb':
+        // 1 pound = 0.453592 kg
+        return price / 0.453592;
+      case 'ton':
+        // 1 metric ton = 1000 kg
+        return price / 1000;
+      case 'kg':
+        return price;
+      default:
+        return price;
+    }
+  };
+
+  const formatKgPrice = (price: number, unit: string) => {
+    const kgPrice = convertToKgPrice(price, unit);
+    return `$${kgPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  };
+
   const formatMarketCap = (marketCap: number) => {
     if (marketCap >= 1e12) return `$${(marketCap / 1e12).toFixed(2)}T`;
     if (marketCap >= 1e9) return `$${(marketCap / 1e9).toFixed(2)}B`;
@@ -161,6 +184,9 @@ export function MarketsTable({ metals, onMetalClick, onWatchlistToggle }: Market
               >
                 Price
               </TableHead>
+              <TableHead className="text-right">
+                Price (KG)
+              </TableHead>
               <TableHead
                 className="cursor-pointer hover:text-foreground text-right"
                 onClick={() => handleSort('change24h')}
@@ -219,6 +245,9 @@ export function MarketsTable({ metals, onMetalClick, onWatchlistToggle }: Market
                 </TableCell>
                 <TableCell className="text-right font-mono">
                   {formatPrice(metal.price, metal.priceUnit)}
+                </TableCell>
+                <TableCell className="text-right font-mono text-muted-foreground">
+                  {formatKgPrice(metal.price, metal.priceUnit)}
                 </TableCell>
                 <TableCell className="text-right font-mono">
                   <span

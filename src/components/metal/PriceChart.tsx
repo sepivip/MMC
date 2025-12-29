@@ -1,8 +1,7 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { ChartTimeframe, ChartDataPoint } from '@/types/metal';
-import { mockMetals } from '@/data/mockMetals';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 
 interface PriceChartProps {
@@ -11,63 +10,42 @@ interface PriceChartProps {
 }
 
 export function PriceChart({ metalId, timeframe }: PriceChartProps) {
-  const chartData = useMemo(() => {
-    const metal = mockMetals.find((m) => m.id === metalId);
-    if (!metal) return [];
+  const [chartData, setChartData] = useState<ChartDataPoint[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-    // Generate mock historical data based on timeframe
-    const dataPoints: ChartDataPoint[] = [];
-    const now = new Date();
-    let numPoints = 7;
-    let interval = 1; // days
-
-    switch (timeframe) {
-      case '1D':
-        numPoints = 24;
-        interval = 1 / 24; // hours
-        break;
-      case '7D':
-        numPoints = 7;
-        interval = 1;
-        break;
-      case '1M':
-        numPoints = 30;
-        interval = 1;
-        break;
-      case '1Y':
-        numPoints = 12;
-        interval = 30;
-        break;
-      case 'ALL':
-        numPoints = 24;
-        interval = 30;
-        break;
+  useEffect(() => {
+    async function fetchHistoricalData() {
+      setIsLoading(true);
+      try {
+        const response = await fetch(`/api/metals/${metalId}/history?timeframe=${timeframe}`);
+        if (response.ok) {
+          const data = await response.json();
+          // Format dates for display
+          const formattedData = data.map((point: ChartDataPoint) => ({
+            ...point,
+            date: timeframe === '1D'
+              ? new Date(point.date).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
+              : new Date(point.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+          }));
+          setChartData(formattedData);
+        }
+      } catch (error) {
+        console.error('Failed to fetch historical data:', error);
+      } finally {
+        setIsLoading(false);
+      }
     }
 
-    let currentPrice = metal.price;
-    const volatility = 0.02;
-
-    for (let i = numPoints - 1; i >= 0; i--) {
-      const date = new Date(now);
-      date.setDate(date.getDate() - i * interval);
-
-      dataPoints.push({
-        date: timeframe === '1D'
-          ? date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
-          : date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-        price: currentPrice,
-      });
-
-      // Random walk for next point
-      const change = (Math.random() - 0.5) * 2 * volatility * currentPrice;
-      currentPrice += change;
-    }
-
-    // Ensure last point matches current price
-    dataPoints[dataPoints.length - 1].price = metal.price;
-
-    return dataPoints;
+    fetchHistoricalData();
   }, [metalId, timeframe]);
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-[400px] text-muted-foreground">
+        Loading chart data...
+      </div>
+    );
+  }
 
   if (chartData.length === 0) {
     return (

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { MarketsTable } from '@/components/markets/MarketsTable';
 import { MobileNav } from '@/components/layout/MobileNav';
@@ -10,6 +10,29 @@ import { Metal } from '@/types/metal';
 export default function Home() {
   const router = useRouter();
   const [metals, setMetals] = useState<Metal[]>(mockMetals);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchMetals() {
+      try {
+        const response = await fetch('/api/metals');
+        if (response.ok) {
+          const data = await response.json();
+          setMetals(data);
+        }
+      } catch (error) {
+        console.error('Failed to fetch metals:', error);
+        // Keep using mock data on error
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchMetals();
+    // Refresh data every 60 seconds
+    const interval = setInterval(fetchMetals, 60000);
+    return () => clearInterval(interval);
+  }, []);
 
   const handleMetalClick = (metalId: string) => {
     router.push(`/metal/${metalId}`);
@@ -65,15 +88,24 @@ export default function Home() {
         <div className="mb-8">
           <h2 className="text-3xl font-bold tracking-tight mb-2">Market Overview</h2>
           <p className="text-muted-foreground">
-            Track live prices, market caps, and trends for {metals.length} metals
+            {isLoading ? 'Loading market data...' : `Track live prices, market caps, and trends for ${metals.length} metals`}
           </p>
         </div>
 
-        <MarketsTable
-          metals={metals}
-          onMetalClick={handleMetalClick}
-          onWatchlistToggle={handleWatchlistToggle}
-        />
+        {isLoading ? (
+          <div className="flex items-center justify-center min-h-[400px]">
+            <div className="text-center">
+              <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-primary border-r-transparent mb-4"></div>
+              <p className="text-muted-foreground">Loading real-time metal prices from Yahoo Finance...</p>
+            </div>
+          </div>
+        ) : (
+          <MarketsTable
+            metals={metals}
+            onMetalClick={handleMetalClick}
+            onWatchlistToggle={handleWatchlistToggle}
+          />
+        )}
       </main>
 
       {/* Footer */}

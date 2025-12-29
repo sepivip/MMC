@@ -25,9 +25,9 @@ export const mockMetals: Metal[] = [
     change24h: 1.23,
     change7d: 3.45,
     marketCap: 13500000000000,
-    supply: 208874,
-    demand: 4400,
-    production: 3000,
+    supply: 216265,      // Above-ground stock (World Gold Council 2024)
+    demand: 4500,        // Annual demand in tonnes
+    production: 3500,    // Annual mine production (USGS 2024)
     sparklineData: generateSparkline(2063.45, 0.02),
   },
   {
@@ -41,9 +41,9 @@ export const mockMetals: Metal[] = [
     change24h: 2.15,
     change7d: 5.32,
     marketCap: 1400000000000,
-    supply: 1740000,
-    demand: 30000,
-    production: 25000,
+    supply: 1700000,     // Above-ground stock estimate (Silver Institute)
+    demand: 30000,       // Annual demand in tonnes
+    production: 26000,   // Annual mine production (USGS 2024)
     sparklineData: generateSparkline(24.18, 0.03),
   },
   {
@@ -57,9 +57,9 @@ export const mockMetals: Metal[] = [
     change24h: -0.45,
     change7d: -1.23,
     marketCap: 185000000000,
-    supply: 8000,
-    demand: 245,
-    production: 180,
+    supply: 8000,        // Above-ground stock estimate (World Platinum Council)
+    demand: 250,         // Annual demand in tonnes
+    production: 190,     // Annual mine production (USGS 2024)
     sparklineData: generateSparkline(912.34, 0.025),
   },
   {
@@ -73,9 +73,9 @@ export const mockMetals: Metal[] = [
     change24h: 1.89,
     change7d: 4.12,
     marketCap: 95000000000,
-    supply: 7000,
-    demand: 320,
-    production: 210,
+    supply: 7000,        // Above-ground stock estimate (Johnson Matthey)
+    demand: 300,         // Annual demand in tonnes
+    production: 210,     // Annual mine production (USGS 2024)
     sparklineData: generateSparkline(1034.67, 0.035),
   },
   {
@@ -89,9 +89,9 @@ export const mockMetals: Metal[] = [
     change24h: 0.87,
     change7d: 2.34,
     marketCap: 980000000000,
-    supply: 870000000,
-    demand: 28000000,
-    production: 25000000,
+    supply: 1000000000,  // Global reserves in tonnes (USGS 2024)
+    demand: 28000000,    // Annual demand in tonnes
+    production: 23000000, // Annual mine production (USGS 2024)
     sparklineData: generateSparkline(8245.50, 0.02),
   },
   {
@@ -105,9 +105,9 @@ export const mockMetals: Metal[] = [
     change24h: -0.34,
     change7d: 1.12,
     marketCap: 450000000000,
-    supply: 1200000000,
-    demand: 69000000,
-    production: 68000000,
+    supply: 1200000000,  // Estimated global stock (International Aluminium Institute)
+    demand: 70000000,    // Annual demand in tonnes
+    production: 73000000, // Annual primary production (IAI 2024)
     sparklineData: generateSparkline(2289.75, 0.015),
   },
   {
@@ -121,9 +121,9 @@ export const mockMetals: Metal[] = [
     change24h: 3.45,
     change7d: 8.76,
     marketCap: 125000000000,
-    supply: 98000,
-    demand: 540,
-    production: 540,
+    supply: 28000000,    // Global resources in tonnes (USGS 2024)
+    demand: 200000,      // Annual demand in tonnes
+    production: 240000,  // Annual mine production (USGS 2024)
     sparklineData: generateSparkline(18500.00, 0.05),
   },
   {
@@ -137,9 +137,9 @@ export const mockMetals: Metal[] = [
     change24h: 1.56,
     change7d: 3.21,
     marketCap: 78000000000,
-    supply: 95000000,
-    demand: 3100000,
-    production: 3000000,
+    supply: 130000000,   // Global reserves in tonnes (USGS 2024)
+    demand: 3500000,     // Annual demand in tonnes
+    production: 3700000, // Annual mine production (USGS 2024)
     sparklineData: generateSparkline(17820.25, 0.03),
   },
   {
@@ -153,9 +153,9 @@ export const mockMetals: Metal[] = [
     change24h: -0.89,
     change7d: -2.15,
     marketCap: 65000000000,
-    supply: 280000000,
-    demand: 14500000,
-    production: 14000000,
+    supply: 224000000,   // Global reserves in tonnes (USGS 2024)
+    demand: 14000000,    // Annual demand in tonnes
+    production: 12000000, // Annual mine production (USGS 2024)
     sparklineData: generateSparkline(2567.80, 0.025),
   },
   {
@@ -169,9 +169,9 @@ export const mockMetals: Metal[] = [
     change24h: 2.34,
     change7d: 5.67,
     marketCap: 42000000000,
-    supply: 25000,
-    demand: 175,
-    production: 170,
+    supply: 11000000,    // Global reserves in tonnes (USGS 2024)
+    demand: 220000,      // Annual demand in tonnes
+    production: 290000,  // Annual mine production (Cobalt Institute 2024)
     sparklineData: generateSparkline(28900.00, 0.04),
   },
   {
@@ -185,9 +185,9 @@ export const mockMetals: Metal[] = [
     change24h: 0.45,
     change7d: 1.23,
     marketCap: 38000000000,
-    supply: 88000000,
-    demand: 12000000,
-    production: 11500000,
+    supply: 90000000,    // Global reserves in tonnes (USGS 2024)
+    demand: 13000000,    // Annual demand in tonnes
+    production: 4500000, // Annual mine production (USGS 2024)
     sparklineData: generateSparkline(2089.45, 0.02),
   },
   {
@@ -201,9 +201,9 @@ export const mockMetals: Metal[] = [
     change24h: 1.12,
     change7d: 2.89,
     marketCap: 28000000000,
-    supply: 6500000,
-    demand: 385,
-    production: 370,
+    supply: 4900000,     // Global reserves in tonnes (USGS 2024)
+    demand: 380000,      // Annual demand in tonnes
+    production: 300000,  // Annual mine production (USGS 2024)
     sparklineData: generateSparkline(25670.50, 0.03),
   },
 ];

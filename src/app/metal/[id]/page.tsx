@@ -1,9 +1,9 @@
 'use client';
 
-import { useState, use } from 'react';
+import { useState, use, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { mockMetals, mockNews } from '@/data/mockMetals';
-import { ChartTimeframe } from '@/types/metal';
+import { ChartTimeframe, Metal } from '@/types/metal';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
@@ -21,8 +21,63 @@ export default function MetalDetailPage({ params }: MetalDetailPageProps) {
   const router = useRouter();
   const [timeframe, setTimeframe] = useState<ChartTimeframe>('7D');
   const [isWatchlisted, setIsWatchlisted] = useState(false);
+  const [metal, setMetal] = useState<Metal | undefined>(mockMetals.find((m) => m.id === id));
+  const [isLoading, setIsLoading] = useState(true);
 
-  const metal = mockMetals.find((m) => m.id === id);
+  useEffect(() => {
+    setIsLoading(true);
+    async function fetchMetal() {
+      try {
+        const response = await fetch('/api/metals');
+        if (response.ok) {
+          const metals = await response.json();
+          const foundMetal = metals.find((m: Metal) => m.id === id);
+          if (foundMetal) {
+            setMetal(foundMetal);
+          }
+        }
+      } catch (error) {
+        console.error('Failed to fetch metal data:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchMetal();
+    // Refresh data every 60 seconds
+    const interval = setInterval(fetchMetal, 60000);
+    return () => clearInterval(interval);
+  }, [id]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <header className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-50">
+          <div className="container mx-auto px-4 py-4">
+            <div className="flex items-center justify-between">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => router.push('/')}
+                className="gap-2"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                Back to Markets
+              </Button>
+            </div>
+          </div>
+        </header>
+        <main className="container mx-auto px-4 py-8">
+          <div className="flex items-center justify-center min-h-[400px]">
+            <div className="text-center">
+              <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-primary border-r-transparent mb-4"></div>
+              <p className="text-muted-foreground">Loading metal data from Yahoo Finance...</p>
+            </div>
+          </div>
+        </main>
+      </div>
+    );
+  }
 
   if (!metal) {
     return (
