@@ -1,36 +1,147 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# MetalMarketCap
+
+A mobile-first web application for tracking real-time market data for precious and industrial metals, inspired by CoinMarketCap.
+
+## Features
+
+### Markets Dashboard
+- **Sortable Table**: Click any column header to sort metals by rank, price, 24h change, 7d change, or market cap
+- **Search & Filter**: Quickly find metals by name or symbol, filter by category (precious, industrial, battery metals)
+- **Mini Charts**: Sparkline charts showing 7-day price trends
+- **Watchlist**: Star your favorite metals for quick access
+
+### Metal Detail Page
+- **Interactive Price Charts**: View price history across multiple timeframes (1D, 7D, 1M, 1Y, ALL)
+- **Key Metrics**: Market cap, total supply, annual demand, and production data
+- **Price Changes**: See 24h and 7d percentage changes at a glance
+- **Related News**: Stay updated with metal-specific market news
+
+### News Feed
+- **Latest Updates**: Browse metal market news from top financial sources
+- **Filter by Metal**: View news for specific metals
+- **Clean Layout**: Easy-to-scan news cards with source and timestamp
+
+### Price Alerts
+- **Custom Alerts**: Set price targets (above/below) for any metal
+- **Alert Management**: Pause, resume, or delete alerts
+- **Visual Status**: See which alerts are active or triggered
+
+### Watchlist
+- **Personal Tracking**: Keep your favorite metals in one place
+- **Full Table View**: All watchlisted metals with complete data
+
+## Tech Stack
+
+- **Framework**: Next.js 15 with App Router
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS
+- **UI Components**: shadcn/ui
+- **Charts**: Recharts
+- **Icons**: Lucide React
+
+## Design System
+
+- **Dark Mode First**: Premium dark theme with metallic accents
+- **Gold Primary**: Accent color inspired by precious metals
+- **Color Palette**:
+  - Gold for precious metals
+  - Blue for industrial metals
+  - Purple for battery metals
+- **Typography**: Geist Sans & Geist Mono fonts
+- **Mobile-First**: Responsive design optimized for all screen sizes
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
+- Node.js 18+
+- npm or yarn
+
+### Installation
+
+1. Navigate to the project directory:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+cd metalmarketcap
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Install dependencies:
+```bash
+npm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. Run the development server:
+```bash
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+4. Open [http://localhost:3000](http://localhost:3000) in your browser
 
-## Learn More
+## Project Structure
 
-To learn more about Next.js, take a look at the following resources:
+```
+src/
+├── app/                    # Next.js app router pages
+│   ├── alerts/            # Price alerts page
+│   ├── metal/[id]/        # Metal detail page
+│   ├── news/              # News feed page
+│   ├── watchlist/         # Watchlist page
+│   ├── layout.tsx         # Root layout
+│   └── page.tsx           # Markets home page
+├── components/
+│   ├── layout/            # Layout components (MobileNav)
+│   ├── markets/           # Markets table & mini chart
+│   ├── metal/             # Metal detail components (PriceChart)
+│   └── ui/                # shadcn/ui components
+├── data/
+│   └── mockMetals.ts      # Mock market data
+├── types/
+│   └── metal.ts           # TypeScript interfaces
+└── lib/
+    └── utils.ts           # Utility functions
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Available Scripts
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run start` - Start production server
+- `npm run lint` - Run ESLint
 
-## Deploy on Vercel
+## Metals Tracked
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Precious Metals
+- Gold (XAU)
+- Silver (XAG)
+- Platinum (XPT)
+- Palladium (XPD)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Industrial Metals
+- Copper (HG)
+- Aluminum (ALU)
+- Zinc (ZN)
+- Lead (PB)
+- Tin (SN)
+
+### Battery Metals
+- Lithium (Li)
+- Nickel (NI)
+- Cobalt (Co)
+
+## Future Enhancements
+
+- Real-time data integration with metal market APIs
+- User authentication and persistent watchlists
+- Push notifications for price alerts
+- Advanced charting with technical indicators
+- Historical data export
+- Mobile app (React Native)
+- Portfolio tracking
+- Price calculator
+
+## License
+
+MIT
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
