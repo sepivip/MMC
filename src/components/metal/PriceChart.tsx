@@ -88,8 +88,8 @@ export function PriceChart({ metalId, timeframe }: PriceChartProps) {
             }}
             labelStyle={{ color: 'hsl(var(--foreground))' }}
             itemStyle={{ color: 'hsl(var(--foreground))' }}
-            formatter={(value: number) => [
-              `$${value.toFixed(2)}`,
+            formatter={(value) => [
+              `$${typeof value === 'number' ? value.toFixed(2) : value}`,
               'Price',
             ]}
           />
