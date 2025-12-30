@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://metalmarketcap.app'),
+  metadataBase: new URL('https://www.metalmarketcap.xyz'),
   title: {
     default: "MetalMarketCap - Real-Time Metal Market Data",
     template: "%s | MetalMarketCap"
@@ -43,7 +43,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://metalmarketcap.app',
+    url: 'https://www.metalmarketcap.xyz',
     siteName: 'MetalMarketCap',
     title: 'MetalMarketCap - Real-Time Metal Market Data',
     description: 'Track prices, market caps, and trends for precious and industrial metals. Gold, silver, platinum, copper, lithium, and more.',
