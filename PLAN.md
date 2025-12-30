@@ -2,6 +2,7 @@
 
 ## ✅ Completed Features
 
+### Core Application (v1.0.0)
 - [x] Next.js 15 setup with TypeScript and Tailwind CSS
 - [x] shadcn/ui component library integration
 - [x] Dark mode theme with premium metallic design
@@ -13,59 +14,80 @@
 - [x] News feed with filtering
 - [x] Price alerts system (create, pause, delete)
 - [x] Watchlist functionality
-- [x] Mobile-responsive navigation
+- [x] Mobile-responsive navigation with hamburger menu
 - [x] Mock data for 12 metals
 - [x] GitHub repository setup
+
+### Phase 1 Polish (v1.1.0)
+- [x] Real-time data integration with Yahoo Finance API
+- [x] Auto-refresh every 60 seconds
+- [x] Price per KG column in markets table
+- [x] SVG app icon with gold metallic M design
+- [x] manifest.json for PWA support
+- [x] robots.txt for SEO
+- [x] Comprehensive meta tags (OpenGraph, Twitter Cards)
+- [x] Error boundaries (error.tsx, global-error.tsx)
+- [x] Loading states with skeleton screens
+- [x] Toast notification system (Sonner)
+- [x] ARIA labels and keyboard navigation
+- [x] Skip-to-content link
+- [x] Version tracking in footer
+- [x] CHANGELOG.md documentation
 
 ---
 
 ## 🎯 Phase 1: Polish & Refinement
 
 ### Branding & Assets
-- [ ] Create favicon (16x16, 32x32, 180x180)
-- [ ] Create apple-touch-icon.png
-- [ ] Create Open Graph image (og:image) for social sharing
-- [ ] Create Twitter Card image
-- [ ] Design app logo/icon
-- [ ] Add manifest.json for PWA support
+- [x] Design app logo/icon (SVG with gold metallic M)
+- [x] Add manifest.json for PWA support
+- [ ] Create favicon-16x16.png (referenced but missing)
+- [ ] Create favicon-32x32.png (referenced but missing)
+- [ ] Create apple-touch-icon.png (referenced but missing)
+- [ ] Create og-image.png for social sharing (referenced but missing)
+- [ ] Create icon-192.png for PWA (referenced in manifest)
+- [ ] Create icon-512.png for PWA (referenced in manifest)
+- [ ] Create screenshot-desktop.png (referenced in manifest)
+- [ ] Create screenshot-mobile.png (referenced in manifest)
 - [ ] Create metal category icons
 
 ### SEO & Meta Tags
-- [ ] Add meta descriptions to all pages
-- [ ] Add Open Graph tags (og:title, og:description, og:image)
-- [ ] Add Twitter Card meta tags
-- [ ] Add canonical URLs
-- [ ] Create sitemap.xml
-- [ ] Create robots.txt
+- [x] Add meta descriptions to all pages (added in layout.tsx)
+- [x] Add Open Graph tags (og:title, og:description, og:image)
+- [x] Add Twitter Card meta tags
+- [x] Create robots.txt
+- [x] Optimize page titles for SEO (template added)
+- [ ] Add canonical URLs (not set in metadata yet)
+- [ ] Create sitemap.xml (not present)
 - [ ] Add structured data (JSON-LD) for metals
-- [ ] Optimize page titles for SEO
+- [ ] Replace placeholder Google verification code
 
 ### Accessibility (a11y)
-- [ ] Add ARIA labels to interactive elements
-- [ ] Ensure proper heading hierarchy (h1 -> h6)
-- [ ] Add keyboard navigation support
+- [x] Add ARIA labels to interactive elements
+- [x] Add keyboard navigation support (Enter key on table)
+- [x] Add skip-to-content link
+- [x] Add focus indicators for all interactive elements
+- [x] Add alt text for all images/icons (aria-hidden where appropriate)
+- [ ] Ensure proper heading hierarchy (h1 -> h6) - needs review
 - [ ] Test with screen readers
-- [ ] Add focus indicators for all interactive elements
-- [ ] Ensure color contrast meets WCAG AA standards
-- [ ] Add alt text for all images/icons
-- [ ] Add skip-to-content link
+- [ ] Ensure color contrast meets WCAG AA standards - needs testing
 
 ### Performance Optimization
+- [x] Add loading skeletons for data fetching (loading.tsx)
 - [ ] Implement lazy loading for images
 - [ ] Add React.memo() to heavy components
 - [ ] Optimize bundle size (analyze with @next/bundle-analyzer)
-- [ ] Add loading skeletons for data fetching
 - [ ] Implement virtual scrolling for large tables
 - [ ] Add image optimization (next/image)
 - [ ] Implement code splitting
 - [ ] Add service worker for offline support
 
 ### UI/UX Improvements
-- [ ] Add loading states to all async operations
-- [ ] Add error boundaries for graceful error handling
-- [ ] Add empty states for all lists/tables
+- [x] Add loading states to all async operations (spinner + loading.tsx)
+- [x] Add error boundaries for graceful error handling (error.tsx + global-error.tsx)
+- [x] Add toast notifications for user actions (Sonner integration)
+- [x] Add empty states for all lists/tables (already in components)
 - [ ] Add confirmation dialogs for destructive actions
-- [ ] Add toast notifications for user actions
 - [ ] Add pagination or infinite scroll for tables
 - [ ] Add table column visibility toggles
 - [ ] Add table density options (compact/comfortable)
@@ -89,13 +111,15 @@
 ## 🚀 Phase 2: Data Integration
 
 ### Real-Time Data
-- [ ] Research metal market data APIs (MetalsAPI, Quandl, etc.)
-- [ ] Implement API client/service layer
-- [ ] Add data fetching with SWR or React Query
+- [x] Research metal market data APIs (using Yahoo Finance)
+- [x] Implement API client/service layer (/api/metals route)
+- [x] Add data fetching (native fetch with useEffect)
+- [x] Add fallback to mock data if API fails
+- [x] Auto-refresh every 60 seconds
+- [ ] Add data fetching with SWR or React Query (for better caching)
 - [ ] Implement WebSocket for real-time updates
-- [ ] Add data caching strategy
+- [ ] Add data caching strategy (beyond auto-refresh)
 - [ ] Handle API rate limits
-- [ ] Add fallback to mock data if API fails
 - [ ] Display API status indicator
 
 ### Historical Data
@@ -197,16 +221,6 @@
 - [ ] Add chart export (PNG, SVG, PDF)
 - [ ] Add custom indicators
 - [ ] Add chart templates/presets
-
----
-
-## 📝 Feedback TODOs
-- [ ] Mark completed: global meta description, Open Graph, Twitter Card, and robots settings already exist in `src/app/layout.tsx`
-- [ ] Add missing assets referenced in metadata/manifest: `/public/favicon-16x16.png`, `/public/favicon-32x32.png`, `/public/apple-touch-icon.png`, `/public/og-image.png`, `/public/icon-192.png`, `/public/icon-512.png`, `/public/screenshot-desktop.png`, `/public/screenshot-mobile.png`
-- [ ] Add sitemap at `/public/sitemap.xml` (not present)
-- [ ] Add canonical URLs (not set in metadata)
-- [ ] Replace placeholder Google verification code in metadata
-- [ ] Add JSON-LD structured data for metals (no JSON-LD found)
 
 ---
 
