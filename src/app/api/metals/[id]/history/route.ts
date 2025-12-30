@@ -83,11 +83,13 @@ export async function GET(
       interval: interval,
     });
 
-    // Convert to chart data points
-    const chartData: ChartDataPoint[] = result.quotes.map((quote) => ({
-      date: new Date(quote.date).toISOString(),
-      price: quote.close || 0,
-    }));
+    // Convert to chart data points, filtering out invalid prices
+    const chartData: ChartDataPoint[] = result.quotes
+      .filter((quote) => quote.close != null && quote.close > 0)
+      .map((quote) => ({
+        date: new Date(quote.date).toISOString(),
+        price: quote.close!,
+      }));
 
     return NextResponse.json(chartData);
   } catch (error) {
