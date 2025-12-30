@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 import { mockMetals } from '@/data/mockMetals';
 import { PriceAlert } from '@/types/metal';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -36,7 +37,10 @@ export default function AlertsPage() {
   const [targetPrice, setTargetPrice] = useState<string>('');
 
   const handleCreateAlert = () => {
-    if (!selectedMetal || !targetPrice) return;
+    if (!selectedMetal || !targetPrice) {
+      toast.error('Please fill in all fields');
+      return;
+    }
 
     const metal = mockMetals.find((m) => m.id === selectedMetal);
     if (!metal) return;
@@ -56,18 +60,30 @@ export default function AlertsPage() {
     setIsDialogOpen(false);
     setSelectedMetal('');
     setTargetPrice('');
+    toast.success(`Alert created for ${metal.name} at $${targetPrice}`);
   };
 
   const handleDeleteAlert = (alertId: string) => {
-    setAlerts(alerts.filter((alert) => alert.id !== alertId));
+    const alert = alerts.find((a) => a.id === alertId);
+    setAlerts(alerts.filter((a) => a.id !== alertId));
+    toast.info(`Alert deleted for ${alert?.metalName}`);
   };
 
   const handleToggleAlert = (alertId: string) => {
+    const alert = alerts.find((a) => a.id === alertId);
+    const newStatus = !alert?.isActive;
+
     setAlerts(
-      alerts.map((alert) =>
-        alert.id === alertId ? { ...alert, isActive: !alert.isActive } : alert
+      alerts.map((a) =>
+        a.id === alertId ? { ...a, isActive: newStatus } : a
       )
     );
+
+    if (newStatus) {
+      toast.success(`Alert resumed for ${alert?.metalName}`);
+    } else {
+      toast.info(`Alert paused for ${alert?.metalName}`);
+    }
   };
 
   return (

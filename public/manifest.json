@@ -1,0 +1,86 @@
+{
+  "name": "MetalMarketCap - Metal Market Data",
+  "short_name": "MetalMarketCap",
+  "description": "Track real-time prices, market caps, and trends for precious and industrial metals",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1E1E2E",
+  "theme_color": "#DAA520",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/favicon-16x16.png",
+      "sizes": "16x16",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon-32x32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": [
+    "finance",
+    "business",
+    "news"
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshot-desktop.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide"
+    },
+    {
+      "src": "/screenshot-mobile.png",
+      "sizes": "750x1334",
+      "type": "image/png",
+      "form_factor": "narrow"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Markets",
+      "url": "/",
+      "description": "View all metal markets"
+    },
+    {
+      "name": "Watchlist",
+      "url": "/watchlist",
+      "description": "View your watchlist"
+    },
+    {
+      "name": "Alerts",
+      "url": "/alerts",
+      "description": "Manage price alerts"
+    },
+    {
+      "name": "News",
+      "url": "/news",
+      "description": "Latest metal market news"
+    }
+  ]
+}

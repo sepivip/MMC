@@ -1,0 +1,21 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Dark background -->
+  <rect width="512" height="512" rx="80" fill="#1E1E2E"/>
+
+  <!-- Gold metallic M shape -->
+  <path d="M140 380V180L256 280L372 180V380H332V260L256 340L180 260V380H140Z" fill="url(#gold-gradient)" stroke="#B8860B" stroke-width="4"/>
+
+  <!-- Shine effect -->
+  <path d="M140 180L256 280L372 180" stroke="#FFD700" stroke-width="3" stroke-linecap="round" opacity="0.6"/>
+
+  <!-- Chart line accent -->
+  <path d="M100 150L150 120L200 140L250 100L300 130L350 90L400 110" stroke="#DAA520" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" opacity="0.4"/>
+
+  <defs>
+    <linearGradient id="gold-gradient" x1="140" y1="180" x2="372" y2="380" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FFD700"/>
+      <stop offset="50%" stop-color="#DAA520"/>
+      <stop offset="100%" stop-color="#B8860B"/>
+    </linearGradient>
+  </defs>
+</svg>

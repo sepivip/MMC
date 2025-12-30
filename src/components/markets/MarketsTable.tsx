@@ -143,12 +143,14 @@ export function MarketsTable({ metals, onMetalClick, onWatchlistToggle }: Market
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="sm:max-w-xs"
+          aria-label="Search metals by name or symbol"
+          type="search"
         />
         <Select
           value={categoryFilter}
           onValueChange={(value) => setCategoryFilter(value as MetalCategory | 'all')}
         >
-          <SelectTrigger className="sm:w-[180px]">
+          <SelectTrigger className="sm:w-[180px]" aria-label="Filter by category">
             <SelectValue placeholder="Category" />
           </SelectTrigger>
           <SelectContent>
@@ -161,26 +163,38 @@ export function MarketsTable({ metals, onMetalClick, onWatchlistToggle }: Market
       </div>
 
       {/* Table */}
-      <div className="border rounded-lg overflow-x-auto">
+      <div className="border rounded-lg overflow-x-auto" role="region" aria-label="Metal market data table">
         <Table>
           <TableHeader className="sticky top-0 bg-card">
             <TableRow>
-              <TableHead className="w-12"></TableHead>
+              <TableHead className="w-12" aria-label="Watchlist"></TableHead>
               <TableHead
                 className="cursor-pointer hover:text-foreground"
                 onClick={() => handleSort('rank')}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => e.key === 'Enter' && handleSort('rank')}
+                aria-sort={sortField === 'rank' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}
               >
                 #
               </TableHead>
               <TableHead
                 className="cursor-pointer hover:text-foreground min-w-[200px]"
                 onClick={() => handleSort('name')}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => e.key === 'Enter' && handleSort('name')}
+                aria-sort={sortField === 'name' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}
               >
                 Metal
               </TableHead>
               <TableHead
                 className="cursor-pointer hover:text-foreground text-right"
                 onClick={() => handleSort('price')}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => e.key === 'Enter' && handleSort('price')}
+                aria-sort={sortField === 'price' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}
               >
                 Price
               </TableHead>
@@ -190,18 +204,30 @@ export function MarketsTable({ metals, onMetalClick, onWatchlistToggle }: Market
               <TableHead
                 className="cursor-pointer hover:text-foreground text-right"
                 onClick={() => handleSort('change24h')}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => e.key === 'Enter' && handleSort('change24h')}
+                aria-sort={sortField === 'change24h' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}
               >
                 24h %
               </TableHead>
               <TableHead
                 className="cursor-pointer hover:text-foreground text-right"
                 onClick={() => handleSort('change7d')}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => e.key === 'Enter' && handleSort('change7d')}
+                aria-sort={sortField === 'change7d' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}
               >
                 7d %
               </TableHead>
               <TableHead
                 className="cursor-pointer hover:text-foreground text-right"
                 onClick={() => handleSort('marketCap')}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => e.key === 'Enter' && handleSort('marketCap')}
+                aria-sort={sortField === 'marketCap' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}
               >
                 Market Cap
               </TableHead>
@@ -215,6 +241,10 @@ export function MarketsTable({ metals, onMetalClick, onWatchlistToggle }: Market
                 key={metal.id}
                 className="cursor-pointer hover:bg-accent/50"
                 onClick={() => onMetalClick(metal.id)}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => e.key === 'Enter' && onMetalClick(metal.id)}
+                aria-label={`View details for ${metal.name}`}
               >
                 <TableCell>
                   <button
@@ -223,9 +253,12 @@ export function MarketsTable({ metals, onMetalClick, onWatchlistToggle }: Market
                       onWatchlistToggle(metal.id);
                     }}
                     className="text-muted-foreground hover:text-primary transition-colors"
+                    aria-label={metal.isWatchlisted ? `Remove ${metal.name} from watchlist` : `Add ${metal.name} to watchlist`}
+                    aria-pressed={metal.isWatchlisted}
                   >
                     <Star
                       className={cn('h-4 w-4', metal.isWatchlisted && 'fill-primary text-primary')}
+                      aria-hidden="true"
                     />
                   </button>
                 </TableCell>

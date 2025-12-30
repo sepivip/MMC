@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Toaster } from 'sonner';
 import "./globals.css";
 
 const geistSans = Geist({
@@ -13,8 +14,69 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "MetalMarketCap - Real-Time Metal Market Data",
-  description: "Track prices, market caps, and trends for precious and industrial metals including gold, silver, platinum, copper, and more.",
+  metadataBase: new URL('https://metalmarketcap.app'),
+  title: {
+    default: "MetalMarketCap - Real-Time Metal Market Data",
+    template: "%s | MetalMarketCap"
+  },
+  description: "Track prices, market caps, and trends for precious and industrial metals including gold, silver, platinum, copper, lithium, and more. Real-time market data at your fingertips.",
+  keywords: ["metals", "gold price", "silver price", "platinum", "copper", "lithium", "metal market", "precious metals", "industrial metals", "commodity prices"],
+  authors: [{ name: "MetalMarketCap" }],
+  creator: "MetalMarketCap",
+  publisher: "MetalMarketCap",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  icons: {
+    icon: [
+      { url: '/icon.svg', type: 'image/svg+xml' },
+      { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
+      { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
+    ],
+    apple: [
+      { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
+    ],
+  },
+  manifest: '/manifest.json',
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    url: 'https://metalmarketcap.app',
+    siteName: 'MetalMarketCap',
+    title: 'MetalMarketCap - Real-Time Metal Market Data',
+    description: 'Track prices, market caps, and trends for precious and industrial metals. Gold, silver, platinum, copper, lithium, and more.',
+    images: [
+      {
+        url: '/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'MetalMarketCap - Metal Market Data Platform',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'MetalMarketCap - Real-Time Metal Market Data',
+    description: 'Track prices, market caps, and trends for precious and industrial metals.',
+    images: ['/og-image.png'],
+    creator: '@metalmarketcap',
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  verification: {
+    google: 'your-google-verification-code',
+  },
 };
 
 export default function RootLayout({
@@ -28,6 +90,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {children}
+        <Toaster position="top-right" richColors closeButton />
       </body>
     </html>
   );

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 import { MarketsTable } from '@/components/markets/MarketsTable';
 import { MobileNav } from '@/components/layout/MobileNav';
 import { mockMetals } from '@/data/mockMetals';
@@ -39,19 +40,36 @@ export default function Home() {
   };
 
   const handleWatchlistToggle = (metalId: string) => {
+    const metal = metals.find((m) => m.id === metalId);
+    const isAdding = !metal?.isWatchlisted;
+
     setMetals((prev) =>
-      prev.map((metal) =>
-        metal.id === metalId
-          ? { ...metal, isWatchlisted: !metal.isWatchlisted }
-          : metal
+      prev.map((m) =>
+        m.id === metalId
+          ? { ...m, isWatchlisted: !m.isWatchlisted }
+          : m
       )
     );
+
+    if (isAdding) {
+      toast.success(`${metal?.name} added to watchlist`);
+    } else {
+      toast.info(`${metal?.name} removed from watchlist`);
+    }
   };
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Skip to main content link for accessibility */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-lg"
+      >
+        Skip to main content
+      </a>
+
       {/* Header */}
-      <header className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-50">
+      <header className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-50" role="banner">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div>
@@ -63,8 +81,8 @@ export default function Home() {
               </p>
             </div>
             <div className="flex items-center gap-4">
-              <nav className="hidden md:flex items-center gap-6">
-                <a href="/" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
+              <nav className="hidden md:flex items-center gap-6" role="navigation" aria-label="Main navigation">
+                <a href="/" className="text-sm font-medium text-foreground hover:text-primary transition-colors" aria-current="page">
                   Markets
                 </a>
                 <a href="/news" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
@@ -84,7 +102,7 @@ export default function Home() {
       </header>
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-8">
+      <main id="main-content" className="container mx-auto px-4 py-8" role="main">
         <div className="mb-8">
           <h2 className="text-3xl font-bold tracking-tight mb-2">Market Overview</h2>
           <p className="text-muted-foreground">
