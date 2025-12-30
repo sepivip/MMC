@@ -466,3 +466,7 @@
 - [x] Re-check "Skip-to-content link" completed item: now in `src/app/layout.tsx` and global
 - [x] Re-check "ARIA labels and keyboard navigation" completed item: icon-only buttons now have labels
 - [ ] Re-check "Loading states with skeleton screens" completed item: only root `src/app/loading.tsx` exists; other routes use spinners
+- [ ] Fix client params handling in `src/app/metal/[id]/page.tsx` (use `params: { id: string }` or `useParams`, remove `use(params)` to avoid runtime errors)
+- [ ] Add keyboard/role semantics for clickable cards in `src/components/markets/MarketHighlightCards.tsx` and `src/components/metal/RelatedMetals.tsx`
+- [ ] Guard against empty metals data in `src/components/markets/MarketStatsBar.tsx` to avoid divide-by-zero/NaN in dominance and weighted change
+- [ ] Make the share card preview responsive on small screens (current `ShareCard` sizes can overflow narrow viewports)

@@ -24,9 +24,8 @@ export function MiniChart({ data, isPositive, width = 100, height = 40 }: MiniCh
 
   return (
     <svg
-      width={width}
-      height={height}
-      className="overflow-visible"
+      viewBox={`0 0 ${width} ${height}`}
+      className="block w-full h-full overflow-hidden"
       preserveAspectRatio="none"
     >
       <polyline

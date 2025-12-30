@@ -49,7 +49,7 @@ export const metadata: Metadata = {
     description: 'Track prices, market caps, and trends for precious and industrial metals. Gold, silver, platinum, copper, lithium, and more.',
     images: [
       {
-        url: '/og-image.png',
+        url: '/op.png',
         width: 1200,
         height: 630,
         alt: 'MetalMarketCap - Metal Market Data Platform',
@@ -60,7 +60,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'MetalMarketCap - Real-Time Metal Market Data',
     description: 'Track prices, market caps, and trends for precious and industrial metals.',
-    images: ['/og-image.png'],
+    images: ['/op.png'],
     creator: '@metalmarketcap',
   },
   robots: {
