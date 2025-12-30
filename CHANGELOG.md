@@ -5,6 +5,36 @@ All notable changes to MetalMarketCap will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2024-12-30
+
+### Added
+- Page-specific SEO metadata for all routes
+  - News page metadata with optimized titles and descriptions
+  - Alerts page metadata for social sharing
+  - Watchlist page metadata
+  - Metal detail pages with dynamic metadata templates
+  - OpenGraph and Twitter Card tags for each page
+- Market data refresh controls
+  - "Last updated" timestamp display
+  - Manual refresh button with spinning animation
+  - Loading state during refresh operations
+  - Toast notification on successful refresh
+  - Mobile-responsive layout
+- Confirmation dialog for alert deletion
+  - AlertDialog component with cancel/confirm actions
+  - Prevents accidental deletions
+  - Toast feedback on deletion
+
+### Changed
+- Skip-to-content link moved to root layout (now available on all pages)
+- Enhanced ARIA labels for all icon-only buttons
+- Improved mobile menu accessibility
+- Updated PLAN.md with completed feedback items
+
+### Fixed
+- Accessibility improvements for delete buttons
+- Keyboard navigation for interactive elements
+
 ## [1.1.0] - 2024-12-30
 
 ### Added
@@ -93,16 +123,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Version History
 
-- **1.1.0** (Current) - Phase 1 polish, accessibility, real API integration
+- **1.2.0** (Current) - Enhanced SEO, UX improvements, accessibility fixes
+- **1.1.0** - Phase 1 polish, accessibility, real API integration
 - **1.0.0** - Initial MVP release
 
 ## Upcoming
 
 See [PLAN.md](PLAN.md) for planned features and improvements.
 
-### Next Release (1.2.0)
+### Next Release (1.3.0)
 - User authentication
 - Persistent watchlist and alerts
 - Portfolio tracking
 - More metal coverage
 - Advanced charting features
+- Image assets (favicons, OG images, PWA icons)
