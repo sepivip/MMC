@@ -8,34 +8,46 @@ import { MobileNav } from '@/components/layout/MobileNav';
 import { mockMetals } from '@/data/mockMetals';
 import { Metal } from '@/types/metal';
 import { getVersionInfo } from '@/lib/version';
+import { Button } from '@/components/ui/button';
+import { RefreshCw } from 'lucide-react';
 
 export default function Home() {
   const router = useRouter();
   const [metals, setMetals] = useState<Metal[]>(mockMetals);
   const [isLoading, setIsLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const versionInfo = getVersionInfo();
 
-  useEffect(() => {
-    async function fetchMetals() {
-      try {
-        const response = await fetch('/api/metals');
-        if (response.ok) {
-          const data = await response.json();
-          setMetals(data);
-        }
-      } catch (error) {
-        console.error('Failed to fetch metals:', error);
-        // Keep using mock data on error
-      } finally {
-        setIsLoading(false);
+  const fetchMetals = async () => {
+    try {
+      const response = await fetch('/api/metals');
+      if (response.ok) {
+        const data = await response.json();
+        setMetals(data);
+        setLastUpdated(new Date());
       }
+    } catch (error) {
+      console.error('Failed to fetch metals:', error);
+      // Keep using mock data on error
+    } finally {
+      setIsLoading(false);
+      setIsRefreshing(false);
     }
+  };
 
+  useEffect(() => {
     fetchMetals();
     // Refresh data every 60 seconds
     const interval = setInterval(fetchMetals, 60000);
     return () => clearInterval(interval);
   }, []);
+
+  const handleManualRefresh = async () => {
+    setIsRefreshing(true);
+    await fetchMetals();
+    toast.success('Market data refreshed');
+  };
 
   const handleMetalClick = (metalId: string) => {
     router.push(`/metal/${metalId}`);
@@ -98,10 +110,33 @@ export default function Home() {
       {/* Main Content */}
       <main id="main-content" className="container mx-auto px-4 py-8" role="main">
         <div className="mb-8">
-          <h2 className="text-3xl font-bold tracking-tight mb-2">Market Overview</h2>
-          <p className="text-muted-foreground">
-            {isLoading ? 'Loading market data...' : `Track live prices, market caps, and trends for ${metals.length} metals`}
-          </p>
+          <div className="flex items-start justify-between gap-4 mb-4">
+            <div>
+              <h2 className="text-3xl font-bold tracking-tight mb-2">Market Overview</h2>
+              <p className="text-muted-foreground">
+                {isLoading ? 'Loading market data...' : `Track live prices, market caps, and trends for ${metals.length} metals`}
+              </p>
+            </div>
+            <div className="flex items-center gap-3">
+              {lastUpdated && (
+                <div className="text-xs text-muted-foreground text-right">
+                  <div className="font-medium">Last updated</div>
+                  <div>{lastUpdated.toLocaleTimeString()}</div>
+                </div>
+              )}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleManualRefresh}
+                disabled={isRefreshing || isLoading}
+                aria-label="Refresh market data"
+                className="gap-2"
+              >
+                <RefreshCw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+                <span className="hidden sm:inline">Refresh</span>
+              </Button>
+            </div>
+          </div>
         </div>
 
         {isLoading ? (

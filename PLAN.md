@@ -441,25 +441,28 @@
 ---
 
 ## 📝 Feedback TODOs
-- [ ] Mark completed: global meta description, Open Graph, Twitter Card, and robots settings exist in `src/app/layout.tsx`
-- [ ] Mark completed: `manifest.json` exists at `public/manifest.json`
-- [ ] Mark completed: `robots.txt` exists at `public/robots.txt`
-- [ ] Mark completed: error boundaries exist (`src/app/error.tsx`, `src/app/global-error.tsx`)
-- [ ] Mark completed: empty states already exist for markets filter, alerts, watchlist, and news lists
+- [x] Mark completed: global meta description, Open Graph, Twitter Card, and robots settings exist in `src/app/layout.tsx`
+- [x] Mark completed: `manifest.json` exists at `public/manifest.json`
+- [x] Mark completed: `robots.txt` exists at `public/robots.txt`
+- [x] Mark completed: error boundaries exist (`src/app/error.tsx`, `src/app/global-error.tsx`)
+- [x] Mark completed: empty states already exist for markets filter, alerts, watchlist, and news lists
 - [ ] Add canonical URLs (not set in metadata)
-- [ ] Add page-specific metadata for `/news`, `/alerts`, `/watchlist`, and dynamic `/metal/[id]`
+- [x] Add page-specific metadata for `/news`, `/alerts`, `/watchlist`, and dynamic `/metal/[id]`
 - [ ] Add JSON-LD structured data for metals (not present)
 - [ ] Add sitemap at `public/sitemap.xml` (currently missing but referenced by `public/robots.txt`)
 - [ ] Replace placeholder Google verification code in metadata
 - [ ] Add missing assets referenced by metadata/manifest: `public/favicon-16x16.png`, `public/favicon-32x32.png`, `public/apple-touch-icon.png`, `public/og-image.png`, `public/icon-192.png`, `public/icon-512.png`, `public/screenshot-desktop.png`, `public/screenshot-mobile.png`
 - [ ] Decide on app logo/icon usage in UI (icon exists at `public/icon.svg` but header is text-only)
-- [ ] Add aria-label to the mobile menu icon button in `src/components/layout/MobileNav.tsx`
-- [ ] Add aria-label to the delete alert icon button in `src/app/alerts/page.tsx`
-- [ ] Move the skip-to-content link into `src/app/layout.tsx` so it appears on all pages
+- [x] Add aria-label to the mobile menu icon button in `src/components/layout/MobileNav.tsx`
+- [x] Add aria-label to the delete alert icon button in `src/app/alerts/page.tsx`
+- [x] Move the skip-to-content link into `src/app/layout.tsx` so it appears on all pages
 - [ ] Ensure visible focus styles for non-button interactive elements (sortable table headers and clickable rows in `src/components/markets/MarketsTable.tsx`)
-- [ ] Add confirmation dialog for destructive actions (alert deletion)
-- [ ] Add "last updated" timestamp and manual refresh control on market data pages
+- [x] Add confirmation dialog for destructive actions (alert deletion)
+- [x] Add "last updated" timestamp and manual refresh control on market data pages
 - [ ] Add light mode toggle (currently `html` hard-sets `className="dark"`)
 - [ ] Add code-splitting or dynamic import for `recharts` on `src/components/metal/PriceChart.tsx`
 - [ ] Add API status indicator for Yahoo Finance fetch health/fallback mode
 - [ ] Add mobile enhancements: pull-to-refresh, swipe navigation, iOS Safari status bar styling
+- [x] Re-check "Skip-to-content link" completed item: now in `src/app/layout.tsx` and global
+- [x] Re-check "ARIA labels and keyboard navigation" completed item: icon-only buttons now have labels
+- [ ] Re-check "Loading states with skeleton screens" completed item: only root `src/app/loading.tsx` exists; other routes use spinners
