@@ -176,7 +176,6 @@ export function MarketsTable({ metals, onMetalClick, onWatchlistToggle }: Market
               <TableHead
                 className="cursor-pointer hover:text-foreground"
                 onClick={() => handleSort('rank')}
-                role="button"
                 tabIndex={0}
                 onKeyDown={(e) => e.key === 'Enter' && handleSort('rank')}
                 aria-sort={sortField === 'rank' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}
@@ -186,7 +185,6 @@ export function MarketsTable({ metals, onMetalClick, onWatchlistToggle }: Market
               <TableHead
                 className="cursor-pointer hover:text-foreground min-w-[200px]"
                 onClick={() => handleSort('name')}
-                role="button"
                 tabIndex={0}
                 onKeyDown={(e) => e.key === 'Enter' && handleSort('name')}
                 aria-sort={sortField === 'name' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}
@@ -196,7 +194,6 @@ export function MarketsTable({ metals, onMetalClick, onWatchlistToggle }: Market
               <TableHead
                 className="cursor-pointer hover:text-foreground text-right"
                 onClick={() => handleSort('price')}
-                role="button"
                 tabIndex={0}
                 onKeyDown={(e) => e.key === 'Enter' && handleSort('price')}
                 aria-sort={sortField === 'price' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}
@@ -209,7 +206,6 @@ export function MarketsTable({ metals, onMetalClick, onWatchlistToggle }: Market
               <TableHead
                 className="cursor-pointer hover:text-foreground text-right"
                 onClick={() => handleSort('change24h')}
-                role="button"
                 tabIndex={0}
                 onKeyDown={(e) => e.key === 'Enter' && handleSort('change24h')}
                 aria-sort={sortField === 'change24h' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}
@@ -219,7 +215,6 @@ export function MarketsTable({ metals, onMetalClick, onWatchlistToggle }: Market
               <TableHead
                 className="cursor-pointer hover:text-foreground text-right"
                 onClick={() => handleSort('change7d')}
-                role="button"
                 tabIndex={0}
                 onKeyDown={(e) => e.key === 'Enter' && handleSort('change7d')}
                 aria-sort={sortField === 'change7d' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}
@@ -229,7 +224,6 @@ export function MarketsTable({ metals, onMetalClick, onWatchlistToggle }: Market
               <TableHead
                 className="cursor-pointer hover:text-foreground text-right"
                 onClick={() => handleSort('marketCap')}
-                role="button"
                 tabIndex={0}
                 onKeyDown={(e) => e.key === 'Enter' && handleSort('marketCap')}
                 aria-sort={sortField === 'marketCap' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}

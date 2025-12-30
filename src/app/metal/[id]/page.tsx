@@ -5,12 +5,17 @@ import { useRouter } from 'next/navigation';
 import { mockMetals, mockNews } from '@/data/mockMetals';
 import { ChartTimeframe, Metal } from '@/types/metal';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Star, TrendingUp, TrendingDown } from 'lucide-react';
+import { ArrowLeft, Star, TrendingUp, TrendingDown, ChevronRight, Share2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { PriceChart } from '@/components/metal/PriceChart';
+import { KeyStatistics } from '@/components/metal/KeyStatistics';
+import { PriceConverter } from '@/components/metal/PriceConverter';
+import { RelatedMetals } from '@/components/metal/RelatedMetals';
+import { AboutMetal } from '@/components/metal/AboutMetal';
+import { ShareModal } from '@/components/metal/ShareModal';
 
 interface MetalDetailPageProps {
   params: Promise<{ id: string }>;
@@ -22,7 +27,9 @@ export default function MetalDetailPage({ params }: MetalDetailPageProps) {
   const [timeframe, setTimeframe] = useState<ChartTimeframe>('7D');
   const [isWatchlisted, setIsWatchlisted] = useState(false);
   const [metal, setMetal] = useState<Metal | undefined>(mockMetals.find((m) => m.id === id));
+  const [allMetals, setAllMetals] = useState<Metal[]>(mockMetals);
   const [isLoading, setIsLoading] = useState(true);
+  const [shareModalOpen, setShareModalOpen] = useState(false);
 
   useEffect(() => {
     setIsLoading(true);
@@ -31,6 +38,7 @@ export default function MetalDetailPage({ params }: MetalDetailPageProps) {
         const response = await fetch('/api/metals');
         if (response.ok) {
           const metals = await response.json();
+          setAllMetals(metals);
           const foundMetal = metals.find((m: Metal) => m.id === id);
           if (foundMetal) {
             setMetal(foundMetal);
@@ -44,10 +52,13 @@ export default function MetalDetailPage({ params }: MetalDetailPageProps) {
     }
 
     fetchMetal();
-    // Refresh data every 60 seconds
     const interval = setInterval(fetchMetal, 60000);
     return () => clearInterval(interval);
   }, [id]);
+
+  const handleMetalClick = (metalId: string) => {
+    router.push(`/metal/${metalId}`);
+  };
 
   if (isLoading) {
     return (
@@ -90,7 +101,7 @@ export default function MetalDetailPage({ params }: MetalDetailPageProps) {
     );
   }
 
-  const relatedNews = mockNews.filter((news) => news.metalId === metal.id || !news.metalId).slice(0, 5);
+  const relatedNews = mockNews.filter((news) => news.metalId === metal.id || !news.metalId).slice(0, 3);
 
   const getCategoryColor = (category: string) => {
     switch (category) {
@@ -105,18 +116,17 @@ export default function MetalDetailPage({ params }: MetalDetailPageProps) {
     }
   };
 
-  const formatNumber = (num: number) => {
-    if (num >= 1e12) return `$${(num / 1e12).toFixed(2)}T`;
-    if (num >= 1e9) return `$${(num / 1e9).toFixed(2)}B`;
-    if (num >= 1e6) return `$${(num / 1e6).toFixed(2)}M`;
-    return `$${num.toLocaleString()}`;
-  };
-
-  const formatSupply = (supply: number) => {
-    if (supply >= 1e9) return `${(supply / 1e9).toFixed(2)}B tons`;
-    if (supply >= 1e6) return `${(supply / 1e6).toFixed(2)}M tons`;
-    if (supply >= 1e3) return `${(supply / 1e3).toFixed(2)}K tons`;
-    return `${supply.toLocaleString()} tons`;
+  const getCategoryLabel = (category: string) => {
+    switch (category) {
+      case 'precious':
+        return 'Precious Metal';
+      case 'industrial':
+        return 'Industrial Metal';
+      case 'battery':
+        return 'Battery Metal';
+      default:
+        return category;
+    }
   };
 
   return (
@@ -134,186 +144,152 @@ export default function MetalDetailPage({ params }: MetalDetailPageProps) {
               <ArrowLeft className="h-4 w-4" />
               Back to Markets
             </Button>
-            <Button
-              variant={isWatchlisted ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setIsWatchlisted(!isWatchlisted)}
-              className="gap-2"
-            >
-              <Star className={cn('h-4 w-4', isWatchlisted && 'fill-current')} />
-              {isWatchlisted ? 'Watchlisted' : 'Add to Watchlist'}
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button
+                variant={isWatchlisted ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setIsWatchlisted(!isWatchlisted)}
+                className="gap-2"
+              >
+                <Star className={cn('h-4 w-4', isWatchlisted && 'fill-current')} />
+                <span className="hidden sm:inline">{isWatchlisted ? 'Watchlisted' : 'Watchlist'}</span>
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShareModalOpen(true)}
+                className="gap-2"
+              >
+                <Share2 className="h-4 w-4" />
+                <span className="hidden sm:inline">Share</span>
+              </Button>
+            </div>
           </div>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto px-4 py-6">
+        {/* Breadcrumb */}
+        <nav className="flex items-center gap-1 text-sm text-muted-foreground mb-6">
+          <button onClick={() => router.push('/')} className="hover:text-foreground transition-colors">
+            Commodities
+          </button>
+          <ChevronRight className="h-4 w-4" />
+          <span>{getCategoryLabel(metal.category)}</span>
+          <ChevronRight className="h-4 w-4" />
+          <span className="text-foreground">{metal.name} ({metal.symbol})</span>
+        </nav>
+
         {/* Metal Header */}
-        <div className="mb-8">
-          <div className="flex items-center gap-3 mb-4">
-            <h1 className="text-4xl font-bold">{metal.name}</h1>
-            <Badge variant="outline" className={cn('text-sm', getCategoryColor(metal.category))}>
-              {metal.category}
+        <div className="mb-6">
+          <div className="flex items-center gap-3 mb-2">
+            <h1 className="text-3xl font-bold">{metal.name} Price</h1>
+            <Badge variant="outline" className="text-xs">
+              {metal.symbol}
             </Badge>
-          </div>
-          <div className="flex items-center gap-2 text-muted-foreground mb-6">
-            <span className="text-lg">{metal.symbol}</span>
-            <span>•</span>
-            <span>Rank #{metal.rank}</span>
+            <Badge variant="outline" className={cn('text-xs', getCategoryColor(metal.category))}>
+              {getCategoryLabel(metal.category)}
+            </Badge>
           </div>
 
           {/* Price Display */}
-          <div className="flex flex-col sm:flex-row sm:items-end gap-4 mb-8">
-            <div>
-              <div className="text-5xl font-bold tracking-tight">
-                ${metal.price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-              </div>
-              <div className="text-muted-foreground">per {metal.priceUnit}</div>
+          <div className="flex flex-wrap items-baseline gap-4">
+            <div className="text-4xl font-bold tracking-tight">
+              ${metal.price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </div>
-            <div className="flex gap-4">
-              <div>
-                <div className="text-sm text-muted-foreground mb-1">24h Change</div>
-                <div className={cn('text-2xl font-semibold flex items-center gap-1', metal.change24h >= 0 ? 'text-green-500' : 'text-red-500')}>
-                  {metal.change24h >= 0 ? <TrendingUp className="h-5 w-5" /> : <TrendingDown className="h-5 w-5" />}
-                  {metal.change24h >= 0 ? '+' : ''}{metal.change24h.toFixed(2)}%
-                </div>
-              </div>
-              <div>
-                <div className="text-sm text-muted-foreground mb-1">7d Change</div>
-                <div className={cn('text-2xl font-semibold flex items-center gap-1', metal.change7d >= 0 ? 'text-green-500' : 'text-red-500')}>
-                  {metal.change7d >= 0 ? <TrendingUp className="h-5 w-5" /> : <TrendingDown className="h-5 w-5" />}
-                  {metal.change7d >= 0 ? '+' : ''}{metal.change7d.toFixed(2)}%
-                </div>
-              </div>
+            <div className="text-muted-foreground">per {metal.priceUnit}</div>
+            <div
+              className={cn(
+                'flex items-center gap-1 text-lg font-semibold',
+                metal.change24h >= 0 ? 'text-green-500' : 'text-red-500'
+              )}
+            >
+              {metal.change24h >= 0 ? <TrendingUp className="h-5 w-5" /> : <TrendingDown className="h-5 w-5" />}
+              {metal.change24h >= 0 ? '+' : ''}{metal.change24h.toFixed(2)}%
+              <span className="text-sm font-normal text-muted-foreground">(24h)</span>
             </div>
           </div>
         </div>
 
-        {/* Chart */}
-        <Card className="mb-8">
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <CardTitle>Price Chart</CardTitle>
-              <Tabs value={timeframe} onValueChange={(v) => setTimeframe(v as ChartTimeframe)}>
-                <TabsList>
-                  <TabsTrigger value="1D">1D</TabsTrigger>
-                  <TabsTrigger value="7D">7D</TabsTrigger>
-                  <TabsTrigger value="1M">1M</TabsTrigger>
-                  <TabsTrigger value="1Y">1Y</TabsTrigger>
-                  <TabsTrigger value="ALL">ALL</TabsTrigger>
-                </TabsList>
-              </Tabs>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <PriceChart metalId={metal.id} timeframe={timeframe} />
-          </CardContent>
-        </Card>
-
-        {/* Key Metrics */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-muted-foreground">Market Cap</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{formatNumber(metal.marketCap)}</div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-muted-foreground">All-Time High</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">
-                {metal.athPrice
-                  ? `$${metal.athPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}/${metal.priceUnit}`
-                  : '-'
-                }
-              </div>
-              {metal.athDate && (
-                <div className="text-sm text-muted-foreground mt-1">
-                  {new Date(metal.athDate).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
+        {/* Two Column Layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Left Column - Chart */}
+          <div className="lg:col-span-2 space-y-6">
+            <Card>
+              <CardHeader className="pb-2">
+                <div className="flex items-center justify-between">
+                  <CardTitle>Price Chart</CardTitle>
+                  <Tabs value={timeframe} onValueChange={(v) => setTimeframe(v as ChartTimeframe)}>
+                    <TabsList className="h-8">
+                      <TabsTrigger value="1D" className="text-xs px-2">1D</TabsTrigger>
+                      <TabsTrigger value="7D" className="text-xs px-2">7D</TabsTrigger>
+                      <TabsTrigger value="1M" className="text-xs px-2">1M</TabsTrigger>
+                      <TabsTrigger value="1Y" className="text-xs px-2">1Y</TabsTrigger>
+                      <TabsTrigger value="ALL" className="text-xs px-2">ALL</TabsTrigger>
+                    </TabsList>
+                  </Tabs>
                 </div>
-              )}
-            </CardContent>
-          </Card>
+              </CardHeader>
+              <CardContent>
+                <PriceChart metalId={metal.id} timeframe={timeframe} />
+              </CardContent>
+            </Card>
 
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-muted-foreground">% from ATH</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className={cn(
-                'text-2xl font-bold',
-                metal.percentFromAth !== undefined && metal.percentFromAth >= -5 ? 'text-green-500' : 'text-red-500'
-              )}>
-                {metal.percentFromAth !== undefined ? `${metal.percentFromAth.toFixed(2)}%` : '-'}
-              </div>
-              {metal.percentFromAth !== undefined && metal.percentFromAth >= -5 && (
-                <div className="text-sm text-green-500 mt-1">Near ATH</div>
-              )}
-            </CardContent>
-          </Card>
+            {/* About Section */}
+            <AboutMetal metal={metal} />
 
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-muted-foreground">Total Supply</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{formatSupply(metal.supply)}</div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-muted-foreground">Annual Demand</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{formatSupply(metal.demand)}</div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-muted-foreground">Annual Production</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{formatSupply(metal.production)}</div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Related News */}
-        {relatedNews.length > 0 && (
-          <Card>
-            <CardHeader>
-              <CardTitle>Related News</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {relatedNews.map((news) => (
-                  <div
-                    key={news.id}
-                    className="flex items-start gap-4 p-4 rounded-lg border border-border hover:bg-accent/50 transition-colors cursor-pointer"
-                  >
-                    <div className="flex-1">
-                      <h3 className="font-semibold mb-1">{news.title}</h3>
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <span>{news.source}</span>
-                        <span>•</span>
-                        <span>{new Date(news.publishedAt).toLocaleDateString()}</span>
-                      </div>
-                    </div>
+            {/* Related News */}
+            {relatedNews.length > 0 && (
+              <Card>
+                <CardHeader className="pb-3">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-lg">Latest News</CardTitle>
+                    <Button variant="ghost" size="sm" onClick={() => router.push('/news')}>
+                      View All
+                    </Button>
                   </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        )}
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    {relatedNews.map((news) => (
+                      <div
+                        key={news.id}
+                        className="p-3 rounded-lg border border-border hover:bg-accent/50 transition-colors cursor-pointer"
+                      >
+                        <h3 className="font-medium text-sm mb-1">{news.title}</h3>
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                          <span>{news.source}</span>
+                          <span>•</span>
+                          <span>{new Date(news.publishedAt).toLocaleDateString()}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+          </div>
+
+          {/* Right Column - Stats & Converter */}
+          <div className="space-y-6">
+            <KeyStatistics metal={metal} />
+            <PriceConverter metal={metal} />
+            <RelatedMetals
+              currentMetal={metal}
+              allMetals={allMetals}
+              onMetalClick={handleMetalClick}
+            />
+          </div>
+        </div>
       </main>
+
+      {/* Share Modal */}
+      <ShareModal
+        metal={metal}
+        open={shareModalOpen}
+        onOpenChange={setShareModalOpen}
+      />
     </div>
   );
 }

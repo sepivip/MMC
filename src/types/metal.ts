@@ -19,6 +19,7 @@ export interface Metal {
   athPrice?: number; // All-time high price
   athDate?: string; // ISO date of ATH
   percentFromAth?: number; // % below ATH (negative number)
+  description?: string; // About text for metal
 }
 
 export interface MetalNews {

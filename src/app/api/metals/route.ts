@@ -4,6 +4,14 @@ import { metalTickers, yahooFinanceUnits } from '@/lib/yahooTickers';
 import { mockMetals } from '@/data/mockMetals';
 import { Metal } from '@/types/metal';
 
+interface QuoteData {
+  regularMarketPrice?: number;
+  regularMarketPreviousClose?: number;
+  fiftyTwoWeekLow?: number;
+  fiftyTwoWeekHigh?: number;
+  regularMarketChangePercent?: number;
+}
+
 const yahooFinance = new YahooFinance({
   suppressNotices: ['yahooSurvey']
 });
@@ -84,13 +92,13 @@ export async function GET() {
     ]);
 
     // Convert quotes array to map for easier lookup
-    const quotesMap = new Map<string, any>();
+    const quotesMap = new Map<string, QuoteData>();
     const athMap = new Map<string, { price: number; date: string } | null>();
 
     quotes.forEach((quote, index) => {
       if (quote && typeof quote === 'object') {
         const ticker = tickers[index];
-        quotesMap.set(ticker, quote);
+        quotesMap.set(ticker, quote as QuoteData);
       }
     });
 

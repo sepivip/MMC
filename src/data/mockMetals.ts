@@ -29,6 +29,7 @@ export const mockMetals: Metal[] = [
     demand: 4500,        // Annual demand in tonnes
     production: 3500,    // Annual mine production (USGS 2024)
     sparklineData: generateSparkline(2063.45, 0.02),
+    description: 'Gold is a dense, soft, malleable, and ductile metal with a bright yellow color and luster. It is one of the least reactive chemical elements and is solid under standard conditions. Gold has been a valuable and highly sought-after precious metal for coinage, jewelry, and other arts since long before the beginning of recorded history. Today, gold is used for investment, jewelry, and industrial applications. It serves as a hedge against inflation and a store of value.',
   },
   {
     id: 'silver',
@@ -45,6 +46,7 @@ export const mockMetals: Metal[] = [
     demand: 30000,       // Annual demand in tonnes
     production: 26000,   // Annual mine production (USGS 2024)
     sparklineData: generateSparkline(24.18, 0.03),
+    description: 'Silver is a lustrous white metal known for its high electrical and thermal conductivity. It has been used for millennia in jewelry, currency, and industrial applications. Today, silver plays a crucial role in electronics, solar panels, and medical equipment due to its antimicrobial properties. Silver is often considered both a precious metal investment and an industrial commodity.',
   },
   {
     id: 'platinum',
@@ -61,6 +63,7 @@ export const mockMetals: Metal[] = [
     demand: 250,         // Annual demand in tonnes
     production: 190,     // Annual mine production (USGS 2024)
     sparklineData: generateSparkline(912.34, 0.025),
+    description: 'Platinum is a dense, malleable, highly unreactive precious metal with a silvery-white appearance. It is rarer than gold and is primarily used in catalytic converters for vehicles, jewelry, and various industrial applications. Platinum is also used in laboratory equipment, electrical contacts, and dentistry. South Africa produces about 70% of the world\'s platinum supply.',
   },
   {
     id: 'palladium',
@@ -77,6 +80,7 @@ export const mockMetals: Metal[] = [
     demand: 300,         // Annual demand in tonnes
     production: 210,     // Annual mine production (USGS 2024)
     sparklineData: generateSparkline(1034.67, 0.035),
+    description: 'Palladium is a rare silvery-white metal belonging to the platinum group. It is the most valuable of the four major precious metals. Palladium is primarily used in catalytic converters for gasoline engines, electronics, and dentistry. The automotive industry accounts for about 85% of palladium demand. Russia and South Africa are the largest producers.',
   },
   {
     id: 'copper',
@@ -93,6 +97,7 @@ export const mockMetals: Metal[] = [
     demand: 28000000,    // Annual demand in tonnes
     production: 23000000, // Annual mine production (USGS 2024)
     sparklineData: generateSparkline(8245.50, 0.02),
+    description: 'Copper is a reddish-brown metal with excellent electrical and thermal conductivity. It has been used by humans for over 10,000 years and is essential for modern infrastructure. Copper is widely used in electrical wiring, plumbing, roofing, and electronics. It is often viewed as an economic indicator due to its widespread use in construction and manufacturing.',
   },
   {
     id: 'aluminum',
@@ -109,6 +114,7 @@ export const mockMetals: Metal[] = [
     demand: 70000000,    // Annual demand in tonnes
     production: 73000000, // Annual primary production (IAI 2024)
     sparklineData: generateSparkline(2289.75, 0.015),
+    description: 'Aluminum is a lightweight, silvery-white metal that is the most abundant metal in the Earth\'s crust. It is highly resistant to corrosion and has excellent strength-to-weight ratio. Aluminum is used extensively in transportation, packaging, construction, and consumer electronics. The production of aluminum is energy-intensive, making electricity costs a key factor in its pricing.',
   },
   {
     id: 'lithium',
@@ -125,6 +131,7 @@ export const mockMetals: Metal[] = [
     demand: 200000,      // Annual demand in tonnes
     production: 240000,  // Annual mine production (USGS 2024)
     sparklineData: generateSparkline(18500.00, 0.05),
+    description: 'Lithium is a soft, silvery-white alkali metal and the lightest of all metals. It has become essential for the modern economy due to its use in rechargeable batteries for electric vehicles, smartphones, and laptops. Lithium demand has surged with the global transition to electric mobility. Australia, Chile, and China are the leading lithium producers.',
   },
   {
     id: 'nickel',
@@ -141,6 +148,7 @@ export const mockMetals: Metal[] = [
     demand: 3500000,     // Annual demand in tonnes
     production: 3700000, // Annual mine production (USGS 2024)
     sparklineData: generateSparkline(17820.25, 0.03),
+    description: 'Nickel is a silvery-white lustrous metal with a slight golden tinge. It is hard and ductile, with high resistance to corrosion. Nickel is primarily used in stainless steel production and increasingly in electric vehicle batteries. The growth of EV adoption has significantly increased nickel demand. Indonesia and the Philippines are major nickel producers.',
   },
   {
     id: 'zinc',
@@ -157,6 +165,7 @@ export const mockMetals: Metal[] = [
     demand: 14000000,    // Annual demand in tonnes
     production: 12000000, // Annual mine production (USGS 2024)
     sparklineData: generateSparkline(2567.80, 0.025),
+    description: 'Zinc is a bluish-white metal that is brittle at room temperature but becomes malleable when heated. It is primarily used for galvanizing steel to prevent rust and corrosion. Zinc is also used in alloys such as brass, die casting, and in batteries. China is the largest producer and consumer of zinc globally.',
   },
   {
     id: 'cobalt',
@@ -173,6 +182,7 @@ export const mockMetals: Metal[] = [
     demand: 220000,      // Annual demand in tonnes
     production: 290000,  // Annual mine production (Cobalt Institute 2024)
     sparklineData: generateSparkline(28900.00, 0.04),
+    description: 'Cobalt is a hard, lustrous, silver-gray metal that is essential for lithium-ion battery cathodes. It is primarily obtained as a byproduct of copper and nickel mining. The Democratic Republic of Congo produces over 70% of the world\'s cobalt, raising supply chain and ethical sourcing concerns. Cobalt is also used in superalloys for jet engines and in magnetic alloys.',
   },
   {
     id: 'lead',
@@ -189,6 +199,7 @@ export const mockMetals: Metal[] = [
     demand: 13000000,    // Annual demand in tonnes
     production: 4500000, // Annual mine production (USGS 2024)
     sparklineData: generateSparkline(2089.45, 0.02),
+    description: 'Lead is a heavy, soft, malleable metal with a bluish-white color when freshly cut. Despite toxicity concerns, lead remains important for lead-acid batteries used in vehicles, backup power systems, and energy storage. The majority of lead demand comes from battery recycling and production. China is the largest producer and consumer of lead.',
   },
   {
     id: 'tin',
@@ -205,6 +216,7 @@ export const mockMetals: Metal[] = [
     demand: 380000,      // Annual demand in tonnes
     production: 300000,  // Annual mine production (USGS 2024)
     sparklineData: generateSparkline(25670.50, 0.03),
+    description: 'Tin is a silvery-white metal that is soft and malleable. It has been used since ancient times, primarily in bronze alloys. Today, tin is mainly used in solder for electronics, tin plating for food containers, and various chemical applications. China and Indonesia are the world\'s largest tin producers. Tin prices are influenced by electronics manufacturing demand.',
   },
 ];
 
