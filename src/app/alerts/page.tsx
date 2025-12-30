@@ -23,6 +23,16 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, Bell, Plus, Trash2 } from 'lucide-react';
 
@@ -30,6 +40,8 @@ export default function AlertsPage() {
   const router = useRouter();
   const [alerts, setAlerts] = useState<PriceAlert[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [alertToDelete, setAlertToDelete] = useState<string | null>(null);
 
   // New alert form state
   const [selectedMetal, setSelectedMetal] = useState<string>('');
@@ -63,10 +75,19 @@ export default function AlertsPage() {
     toast.success(`Alert created for ${metal.name} at $${targetPrice}`);
   };
 
-  const handleDeleteAlert = (alertId: string) => {
-    const alert = alerts.find((a) => a.id === alertId);
-    setAlerts(alerts.filter((a) => a.id !== alertId));
-    toast.info(`Alert deleted for ${alert?.metalName}`);
+  const handleDeleteClick = (alertId: string) => {
+    setAlertToDelete(alertId);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleConfirmDelete = () => {
+    if (alertToDelete) {
+      const alert = alerts.find((a) => a.id === alertToDelete);
+      setAlerts(alerts.filter((a) => a.id !== alertToDelete));
+      toast.info(`Alert deleted for ${alert?.metalName}`);
+      setDeleteDialogOpen(false);
+      setAlertToDelete(null);
+    }
   };
 
   const handleToggleAlert = (alertId: string) => {
@@ -228,10 +249,11 @@ export default function AlertsPage() {
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => handleDeleteAlert(alert.id)}
+                          onClick={() => handleDeleteClick(alert.id)}
                           className="text-destructive hover:text-destructive"
+                          aria-label={`Delete alert for ${alert.metalName}`}
                         >
-                          <Trash2 className="h-4 w-4" />
+                          <Trash2 className="h-4 w-4" aria-hidden="true" />
                         </Button>
                       </div>
                     </div>
@@ -256,6 +278,27 @@ export default function AlertsPage() {
           </Card>
         )}
       </main>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Alert?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete this price alert.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleConfirmDelete}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

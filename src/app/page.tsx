@@ -62,14 +62,6 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Skip to main content link for accessibility */}
-      <a
-        href="#main-content"
-        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-lg"
-      >
-        Skip to main content
-      </a>
-
       {/* Header */}
       <header className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-50" role="banner">
         <div className="container mx-auto px-4 py-4">
