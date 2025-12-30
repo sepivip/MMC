@@ -200,6 +200,16 @@
 
 ---
 
+## 📝 Feedback TODOs
+- [ ] Mark completed: global meta description, Open Graph, Twitter Card, and robots settings already exist in `src/app/layout.tsx`
+- [ ] Add missing assets referenced in metadata/manifest: `/public/favicon-16x16.png`, `/public/favicon-32x32.png`, `/public/apple-touch-icon.png`, `/public/og-image.png`, `/public/icon-192.png`, `/public/icon-512.png`, `/public/screenshot-desktop.png`, `/public/screenshot-mobile.png`
+- [ ] Add sitemap at `/public/sitemap.xml` (not present)
+- [ ] Add canonical URLs (not set in metadata)
+- [ ] Replace placeholder Google verification code in metadata
+- [ ] Add JSON-LD structured data for metals (no JSON-LD found)
+
+---
+
 ## 🏗️ Phase 5: Infrastructure
 
 ### Database
