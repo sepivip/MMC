@@ -141,13 +141,18 @@ export async function GET() {
       const pricePerTon = convertToTonPrice(currentPrice, realUnit);
       const calculatedMarketCap = metal.supply * pricePerTon;
 
-      // Get ATH data
+      // Get ATH data - ensure ATH is never lower than current price
       const ath = athMap.get(metal.id);
-      const athPrice = ath?.price;
-      const athDate = ath?.date;
-      const percentFromAth = athPrice
-        ? parseFloat((((currentPrice - athPrice) / athPrice) * 100).toFixed(2))
-        : undefined;
+      let athPrice = ath?.price ?? currentPrice;
+      let athDate = ath?.date;
+
+      // If current price is higher than historical ATH, current price is the new ATH
+      if (currentPrice > athPrice) {
+        athPrice = currentPrice;
+        athDate = new Date().toISOString();
+      }
+
+      const percentFromAth = parseFloat((((currentPrice - athPrice) / athPrice) * 100).toFixed(2));
 
       return {
         ...metal,
