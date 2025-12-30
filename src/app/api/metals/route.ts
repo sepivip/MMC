@@ -8,9 +8,37 @@ const yahooFinance = new YahooFinance({
   suppressNotices: ['yahooSurvey']
 });
 
-// Cache response for 60 seconds - all users share the same cached data
+// Cache response for 5 minutes - ATH requires historical data fetching
 // This prevents hitting Yahoo Finance rate limits
-export const revalidate = 60;
+export const revalidate = 300;
+
+// Fetch All-Time High for a ticker
+async function getATH(ticker: string): Promise<{ price: number; date: string } | null> {
+  try {
+    const result = await yahooFinance.chart(ticker, {
+      period1: '1970-01-01',
+      period2: new Date().toISOString().split('T')[0],
+      interval: '1mo',
+    });
+
+    if (!result.quotes?.length) return null;
+
+    let maxPrice = 0;
+    let maxDate = '';
+
+    for (const quote of result.quotes) {
+      if (quote.high && quote.high > maxPrice) {
+        maxPrice = quote.high;
+        maxDate = new Date(quote.date).toISOString();
+      }
+    }
+
+    return maxPrice > 0 ? { price: maxPrice, date: maxDate } : null;
+  } catch (err) {
+    console.error(`Failed to fetch ATH for ${ticker}:`, err);
+    return null;
+  }
+}
 
 // Convert price to per-ton for market cap calculation
 function convertToTonPrice(price: number, unit: string): number {
@@ -36,8 +64,9 @@ export async function GET() {
   try {
     // Fetch quotes for all metal tickers
     const tickers = Object.values(metalTickers);
+    const metalIds = Object.keys(metalTickers);
 
-    // Fetch quotes individually for better error handling
+    // Fetch quotes and ATH data in parallel
     const quotePromises = tickers.map(ticker =>
       yahooFinance.quote(ticker).catch(err => {
         console.error(`Failed to fetch ${ticker}:`, err.message);
@@ -45,16 +74,29 @@ export async function GET() {
       })
     );
 
-    const quotes = await Promise.all(quotePromises);
+    const athPromises = tickers.map(ticker =>
+      getATH(ticker).catch(() => null)
+    );
+
+    const [quotes, athResults] = await Promise.all([
+      Promise.all(quotePromises),
+      Promise.all(athPromises),
+    ]);
 
     // Convert quotes array to map for easier lookup
     const quotesMap = new Map<string, any>();
+    const athMap = new Map<string, { price: number; date: string } | null>();
 
     quotes.forEach((quote, index) => {
       if (quote && typeof quote === 'object') {
         const ticker = tickers[index];
         quotesMap.set(ticker, quote);
       }
+    });
+
+    athResults.forEach((ath, index) => {
+      const metalId = metalIds[index];
+      athMap.set(metalId, ath);
     });
 
     // Update mock metals with real prices
@@ -99,6 +141,14 @@ export async function GET() {
       const pricePerTon = convertToTonPrice(currentPrice, realUnit);
       const calculatedMarketCap = metal.supply * pricePerTon;
 
+      // Get ATH data
+      const ath = athMap.get(metal.id);
+      const athPrice = ath?.price;
+      const athDate = ath?.date;
+      const percentFromAth = athPrice
+        ? parseFloat((((currentPrice - athPrice) / athPrice) * 100).toFixed(2))
+        : undefined;
+
       return {
         ...metal,
         price: parseFloat(currentPrice.toFixed(2)),
@@ -107,6 +157,9 @@ export async function GET() {
         change7d: parseFloat(change7d.toFixed(2)),
         marketCap: Math.round(calculatedMarketCap), // Dynamic market cap
         sparklineData: generateRealisticSparkline(currentPrice, change7d),
+        athPrice: athPrice ? parseFloat(athPrice.toFixed(2)) : undefined,
+        athDate,
+        percentFromAth,
       };
     });
 

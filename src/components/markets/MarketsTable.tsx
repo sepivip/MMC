@@ -123,6 +123,11 @@ export function MarketsTable({ metals, onMetalClick, onWatchlistToggle }: Market
     return `${supply.toLocaleString()} tons`;
   };
 
+  const formatAthPrice = (price: number | undefined, unit: string) => {
+    if (!price) return '-';
+    return `$${price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}/${unit}`;
+  };
+
   const getCategoryColor = (category: MetalCategory) => {
     switch (category) {
       case 'precious':
@@ -232,6 +237,7 @@ export function MarketsTable({ metals, onMetalClick, onWatchlistToggle }: Market
                 Market Cap
               </TableHead>
               <TableHead className="text-right">Supply</TableHead>
+              <TableHead className="text-right">ATH</TableHead>
               <TableHead className="w-[120px]">Last 7 Days</TableHead>
             </TableRow>
           </TableHeader>
@@ -307,6 +313,19 @@ export function MarketsTable({ metals, onMetalClick, onWatchlistToggle }: Market
                 </TableCell>
                 <TableCell className="text-right text-muted-foreground">
                   {formatSupply(metal.supply)}
+                </TableCell>
+                <TableCell className="text-right font-mono">
+                  <div>
+                    <div>{formatAthPrice(metal.athPrice, metal.priceUnit)}</div>
+                    {metal.percentFromAth !== undefined && (
+                      <div className={cn(
+                        'text-xs',
+                        metal.percentFromAth >= -5 ? 'text-green-500' : 'text-muted-foreground'
+                      )}>
+                        {metal.percentFromAth.toFixed(1)}%
+                      </div>
+                    )}
+                  </div>
                 </TableCell>
                 <TableCell>
                   <MiniChart data={metal.sparklineData} isPositive={metal.change7d >= 0} />

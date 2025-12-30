@@ -212,13 +212,49 @@ export default function MetalDetailPage({ params }: MetalDetailPageProps) {
         </Card>
 
         {/* Key Metrics */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
           <Card>
             <CardHeader className="pb-3">
               <CardTitle className="text-sm font-medium text-muted-foreground">Market Cap</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{formatNumber(metal.marketCap)}</div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm font-medium text-muted-foreground">All-Time High</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">
+                {metal.athPrice
+                  ? `$${metal.athPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}/${metal.priceUnit}`
+                  : '-'
+                }
+              </div>
+              {metal.athDate && (
+                <div className="text-sm text-muted-foreground mt-1">
+                  {new Date(metal.athDate).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm font-medium text-muted-foreground">% from ATH</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className={cn(
+                'text-2xl font-bold',
+                metal.percentFromAth !== undefined && metal.percentFromAth >= -5 ? 'text-green-500' : 'text-red-500'
+              )}>
+                {metal.percentFromAth !== undefined ? `${metal.percentFromAth.toFixed(2)}%` : '-'}
+              </div>
+              {metal.percentFromAth !== undefined && metal.percentFromAth >= -5 && (
+                <div className="text-sm text-green-500 mt-1">Near ATH</div>
+              )}
             </CardContent>
           </Card>
 

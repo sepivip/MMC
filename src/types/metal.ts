@@ -16,6 +16,9 @@ export interface Metal {
   production: number; // in tons per year
   sparklineData: number[]; // last 7 days prices for mini chart
   isWatchlisted?: boolean;
+  athPrice?: number; // All-time high price
+  athDate?: string; // ISO date of ATH
+  percentFromAth?: number; // % below ATH (negative number)
 }
 
 export interface MetalNews {
