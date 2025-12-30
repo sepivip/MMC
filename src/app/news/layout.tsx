@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Metal Market News | MetalMarketCap',
     description: 'Latest news and updates on precious and industrial metals markets.',
-    url: 'https://metalmarketcap.com/news',
+    url: 'https://www.metalmarketcap.xyz/news',
   },
   twitter: {
     title: 'Metal Market News | MetalMarketCap',

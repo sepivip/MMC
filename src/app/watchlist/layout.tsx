@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Watchlist | MetalMarketCap',
     description: 'Track your favorite metals in one place.',
-    url: 'https://metalmarketcap.com/watchlist',
+    url: 'https://www.metalmarketcap.xyz/watchlist',
   },
   twitter: {
     title: 'Watchlist | MetalMarketCap',

@@ -3,7 +3,7 @@ User-agent: *
 Allow: /
 
 # Sitemaps
-Sitemap: https://metalmarketcap.app/sitemap.xml
+Sitemap: https://www.metalmarketcap.xyz/sitemap.xml
 
 # Disallow admin/private paths (if any in future)
 # User-agent: *
