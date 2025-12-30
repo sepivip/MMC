@@ -48,12 +48,20 @@ export async function GET() {
     const quotes = await Promise.all(quotePromises);
 
     // Convert quotes array to map for easier lookup
-    const quotesMap = new Map<string, any>();
+    interface QuoteData {
+      regularMarketPrice?: number;
+      regularMarketPreviousClose?: number;
+      fiftyTwoWeekLow?: number;
+      fiftyTwoWeekHigh?: number;
+      regularMarketChangePercent?: number;
+    }
+
+    const quotesMap = new Map<string, QuoteData>();
 
     quotes.forEach((quote, index) => {
       if (quote && typeof quote === 'object') {
         const ticker = tickers[index];
-        quotesMap.set(ticker, quote);
+        quotesMap.set(ticker, quote as QuoteData);
       }
     });
 
@@ -73,8 +81,6 @@ export async function GET() {
       const change24h = ((currentPrice - previousClose) / previousClose) * 100;
 
       // For 7d change, use quote data if available
-      const fiftyTwoWeekLow = quote.fiftyTwoWeekLow || currentPrice;
-      const fiftyTwoWeekHigh = quote.fiftyTwoWeekHigh || currentPrice;
       const change7d = quote.regularMarketChangePercent || 0;
 
       // Generate sparkline based on recent price action

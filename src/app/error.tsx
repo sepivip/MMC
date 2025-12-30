@@ -29,7 +29,7 @@ export default function Error({
         </CardHeader>
         <CardContent className="space-y-4">
           <p className="text-muted-foreground">
-            We encountered an unexpected error. Don't worry, your data is safe.
+            We encountered an unexpected error. Don&apos;t worry, your data is safe.
           </p>
           {error.message && (
             <div className="p-3 bg-muted rounded-lg">

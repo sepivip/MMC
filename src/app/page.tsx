@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { toast } from 'sonner';
 import { MarketsTable } from '@/components/markets/MarketsTable';
 import { MobileNav } from '@/components/layout/MobileNav';
@@ -88,18 +89,18 @@ export default function Home() {
             </div>
             <div className="flex items-center gap-4">
               <nav className="hidden md:flex items-center gap-6" role="navigation" aria-label="Main navigation">
-                <a href="/" className="text-sm font-medium text-foreground hover:text-primary transition-colors" aria-current="page">
+                <Link href="/" className="text-sm font-medium text-foreground hover:text-primary transition-colors" aria-current="page">
                   Markets
-                </a>
-                <a href="/news" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+                </Link>
+                <Link href="/news" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
                   News
-                </a>
-                <a href="/alerts" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+                </Link>
+                <Link href="/alerts" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
                   Alerts
-                </a>
-                <a href="/watchlist" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+                </Link>
+                <Link href="/watchlist" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
                   Watchlist
-                </a>
+                </Link>
               </nav>
               <MobileNav />
             </div>
