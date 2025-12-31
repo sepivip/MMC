@@ -166,19 +166,21 @@ export default function MetalDetailPage({ params }: MetalDetailPageProps) {
           {/* Price Display */}
           <div className="flex flex-wrap items-baseline gap-4">
             <div className="text-4xl font-bold tracking-tight">
-              ${metal.price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              {metal.isMockData ? '-' : `$${metal.price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
             </div>
-            <div className="text-muted-foreground">per {metal.priceUnit}</div>
-            <div
-              className={cn(
-                'flex items-center gap-1 text-lg font-semibold',
-                metal.change24h >= 0 ? 'text-green-500' : 'text-red-500'
-              )}
-            >
-              {metal.change24h >= 0 ? <TrendingUp className="h-5 w-5" /> : <TrendingDown className="h-5 w-5" />}
-              {metal.change24h >= 0 ? '+' : ''}{metal.change24h.toFixed(2)}%
-              <span className="text-sm font-normal text-muted-foreground">(24h)</span>
-            </div>
+            {!metal.isMockData && <div className="text-muted-foreground">per {metal.priceUnit}</div>}
+            {!metal.isMockData && (
+              <div
+                className={cn(
+                  'flex items-center gap-1 text-lg font-semibold',
+                  metal.change24h >= 0 ? 'text-green-500' : 'text-red-500'
+                )}
+              >
+                {metal.change24h >= 0 ? <TrendingUp className="h-5 w-5" /> : <TrendingDown className="h-5 w-5" />}
+                {metal.change24h >= 0 ? '+' : ''}{metal.change24h.toFixed(2)}%
+                <span className="text-sm font-normal text-muted-foreground">(24h)</span>
+              </div>
+            )}
           </div>
         </div>
 

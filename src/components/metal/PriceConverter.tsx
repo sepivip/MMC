@@ -32,6 +32,21 @@ export function PriceConverter({ metal }: PriceConverterProps) {
     setMetalAmount((amount / metal.price).toFixed(6));
   };
 
+  if (metal.isMockData) {
+    return (
+      <Card>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-lg">{metal.symbol} to USD Converter</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="text-center text-muted-foreground py-4">
+            Price data unavailable
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
     <Card>
       <CardHeader className="pb-3">

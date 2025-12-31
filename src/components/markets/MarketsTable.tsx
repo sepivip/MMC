@@ -277,33 +277,41 @@ export function MarketsTable({ metals, onMetalClick, onWatchlistToggle }: Market
                   </div>
                 </TableCell>
                 <TableCell className="text-right font-mono">
-                  {formatPrice(metal.price, metal.priceUnit)}
+                  {metal.isMockData ? '-' : formatPrice(metal.price, metal.priceUnit)}
                 </TableCell>
                 <TableCell className="text-right font-mono text-muted-foreground">
-                  {formatKgPrice(metal.price, metal.priceUnit)}
+                  {metal.isMockData ? '-' : formatKgPrice(metal.price, metal.priceUnit)}
                 </TableCell>
                 <TableCell className="text-right font-mono">
-                  <span
-                    className={cn(
-                      metal.change24h >= 0 ? 'text-green-500' : 'text-red-500'
-                    )}
-                  >
-                    {metal.change24h >= 0 ? '+' : ''}
-                    {metal.change24h.toFixed(2)}%
-                  </span>
+                  {metal.isMockData ? (
+                    '-'
+                  ) : (
+                    <span
+                      className={cn(
+                        metal.change24h >= 0 ? 'text-green-500' : 'text-red-500'
+                      )}
+                    >
+                      {metal.change24h >= 0 ? '+' : ''}
+                      {metal.change24h.toFixed(2)}%
+                    </span>
+                  )}
                 </TableCell>
                 <TableCell className="text-right font-mono">
-                  <span
-                    className={cn(
-                      metal.change7d >= 0 ? 'text-green-500' : 'text-red-500'
-                    )}
-                  >
-                    {metal.change7d >= 0 ? '+' : ''}
-                    {metal.change7d.toFixed(2)}%
-                  </span>
+                  {metal.isMockData ? (
+                    '-'
+                  ) : (
+                    <span
+                      className={cn(
+                        metal.change7d >= 0 ? 'text-green-500' : 'text-red-500'
+                      )}
+                    >
+                      {metal.change7d >= 0 ? '+' : ''}
+                      {metal.change7d.toFixed(2)}%
+                    </span>
+                  )}
                 </TableCell>
                 <TableCell className="text-right font-mono">
-                  {formatMarketCap(metal.marketCap)}
+                  {metal.isMockData ? '-' : formatMarketCap(metal.marketCap)}
                 </TableCell>
                 <TableCell className="text-right text-muted-foreground">
                   {formatSupply(metal.supply)}
@@ -322,7 +330,11 @@ export function MarketsTable({ metals, onMetalClick, onWatchlistToggle }: Market
                   </div>
                 </TableCell>
                 <TableCell>
-                  <MiniChart data={metal.sparklineData} isPositive={metal.change7d >= 0} />
+                  {metal.isMockData ? (
+                    <div className="text-center text-muted-foreground">-</div>
+                  ) : (
+                    <MiniChart data={metal.sparklineData} isPositive={metal.change7d >= 0} />
+                  )}
                 </TableCell>
               </TableRow>
             ))}

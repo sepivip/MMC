@@ -26,21 +26,21 @@ export function KeyStatistics({ metal }: KeyStatisticsProps) {
   const stats = [
     {
       label: 'Market Cap',
-      value: formatNumber(metal.marketCap),
+      value: metal.isMockData ? '-' : formatNumber(metal.marketCap),
     },
     {
       label: 'All-Time High',
-      value: metal.athPrice
+      value: metal.isMockData ? '-' : (metal.athPrice
         ? `$${metal.athPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
-        : '-',
-      sublabel: metal.athDate
+        : '-'),
+      sublabel: metal.isMockData ? undefined : (metal.athDate
         ? new Date(metal.athDate).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
-        : undefined,
+        : undefined),
     },
     {
       label: '% from ATH',
-      value: metal.percentFromAth !== undefined ? `${metal.percentFromAth.toFixed(2)}%` : '-',
-      valueClass: metal.percentFromAth !== undefined && metal.percentFromAth >= -5 ? 'text-green-500' : 'text-red-500',
+      value: metal.isMockData ? '-' : (metal.percentFromAth !== undefined ? `${metal.percentFromAth.toFixed(2)}%` : '-'),
+      valueClass: metal.isMockData ? undefined : (metal.percentFromAth !== undefined && metal.percentFromAth >= -5 ? 'text-green-500' : 'text-red-500'),
     },
     {
       label: 'Total Supply',
