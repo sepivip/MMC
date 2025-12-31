@@ -7,7 +7,7 @@ import { Metal } from '@/types/metal';
 import { MarketsTable } from '@/components/markets/MarketsTable';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { ArrowLeft, Star } from 'lucide-react';
+import { Star } from 'lucide-react';
 
 export default function WatchlistPage() {
   const router = useRouter();
@@ -33,25 +33,6 @@ export default function WatchlistPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => router.push('/')}
-              className="gap-2"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              Back to Markets
-            </Button>
-            <h1 className="text-xl font-bold">Watchlist</h1>
-            <div className="w-[100px]"></div>
-          </div>
-        </div>
-      </header>
-
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
         <div className="mb-8">

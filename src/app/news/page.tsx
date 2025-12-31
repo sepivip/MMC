@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { mockNews, mockMetals } from '@/data/mockMetals';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -12,10 +11,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { ArrowLeft, ExternalLink } from 'lucide-react';
+import { ExternalLink } from 'lucide-react';
 
 export default function NewsPage() {
-  const router = useRouter();
   const [metalFilter, setMetalFilter] = useState<string>('all');
 
   const filteredNews = mockNews.filter(
@@ -37,25 +35,6 @@ export default function NewsPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => router.push('/')}
-              className="gap-2"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              Back to Markets
-            </Button>
-            <h1 className="text-xl font-bold">Metal Market News</h1>
-            <div className="w-[100px]"></div>
-          </div>
-        </div>
-      </header>
-
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8 max-w-4xl">
         <div className="mb-8">
