@@ -27,7 +27,14 @@ export class YahooProvider implements MetalPriceProvider {
   async isAvailable(): Promise<boolean> {
     try {
       // Test with a simple quote request for gold
-      const testQuote: any = await yahooFinance.quote('GC=F');
+      // Use curl User-Agent to avoid being blocked
+      const testQuote: any = await yahooFinance.quote('GC=F', {}, {
+        fetchOptions: {
+          headers: {
+            'User-Agent': 'curl/7.68.0'
+          }
+        }
+      });
       return !!(testQuote && typeof testQuote === 'object' && testQuote.regularMarketPrice);
     } catch (error) {
       console.error('Yahoo Finance availability check failed:', error);
@@ -52,9 +59,16 @@ export class YahooProvider implements MetalPriceProvider {
       console.log(`[Yahoo] Fetching ${tickers.length} metals: ${tickers.join(', ')}`);
 
       // Batch request: fetch all quotes at once
+      // Use curl User-Agent to avoid being blocked
       let rawQuotes: any[] = [];
       try {
-        const batchQuotes = await yahooFinance.quote(tickers);
+        const batchQuotes = await yahooFinance.quote(tickers, {}, {
+          fetchOptions: {
+            headers: {
+              'User-Agent': 'curl/7.68.0'
+            }
+          }
+        });
         rawQuotes = Array.isArray(batchQuotes) ? batchQuotes : [batchQuotes];
       } catch (err: any) {
         console.error('[Yahoo] Batch quote request failed:', err.message);
