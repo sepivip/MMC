@@ -74,38 +74,35 @@ export async function GET() {
     const tickers = Object.values(metalTickers);
     const metalIds = Object.keys(metalTickers);
 
-    // Fetch quotes and ATH data in parallel
-    const quotePromises = tickers.map(ticker =>
-      yahooFinance.quote(ticker).catch(err => {
-        console.error(`Failed to fetch ${ticker}:`, err.message);
-        return null;
-      })
-    );
+    // BATCH REQUEST: Fetch all quotes in a single request to reduce rate limits
+    let quotes: any[] = [];
+    try {
+      const batchQuotes = await yahooFinance.quote(tickers);
+      quotes = Array.isArray(batchQuotes) ? batchQuotes : [batchQuotes];
+    } catch (err: any) {
+      console.error('Failed to fetch batch quotes:', err.message);
+      // Return mock data immediately if batch quote fails
+      const mockDataWithFlag = mockMetals.map(metal => ({ ...metal, isMockData: true }));
+      return NextResponse.json(mockDataWithFlag);
+    }
 
-    const athPromises = tickers.map(ticker =>
-      getATH(ticker).catch(() => null)
-    );
-
-    const [quotes, athResults] = await Promise.all([
-      Promise.all(quotePromises),
-      Promise.all(athPromises),
-    ]);
+    // Disable ATH fetching to avoid rate limits (can re-enable later with caching)
+    // const athPromises = tickers.map(ticker =>
+    //   getATH(ticker).catch(() => null)
+    // );
+    // const athResults = await Promise.all(athPromises);
 
     // Convert quotes array to map for easier lookup
     const quotesMap = new Map<string, QuoteData>();
-    const athMap = new Map<string, { price: number; date: string } | null>();
 
-    quotes.forEach((quote, index) => {
-      if (quote && typeof quote === 'object') {
-        const ticker = tickers[index];
-        quotesMap.set(ticker, quote as QuoteData);
+    quotes.forEach((quote) => {
+      if (quote && typeof quote === 'object' && quote.symbol) {
+        quotesMap.set(quote.symbol, quote as QuoteData);
       }
     });
 
-    athResults.forEach((ath, index) => {
-      const metalId = metalIds[index];
-      athMap.set(metalId, ath);
-    });
+    // ATH map is now empty (disabled to avoid rate limits)
+    const athMap = new Map<string, { price: number; date: string } | null>();
 
     // Update mock metals with real prices
     const updatedMetals: Metal[] = mockMetals.map(metal => {
