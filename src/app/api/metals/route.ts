@@ -57,7 +57,13 @@ export async function GET() {
     if (isMockData || quotes.size === 0) {
       console.warn('[API Route] All providers failed, returning mock data');
       const mockDataWithFlag = mockMetals.map(metal => ({ ...metal, isMockData: true }));
-      return NextResponse.json(mockDataWithFlag);
+      // Sort by market cap and assign ranks
+      const sortedMockData = [...mockDataWithFlag].sort((a, b) => b.marketCap - a.marketCap);
+      const rankedMockData = sortedMockData.map((metal, index) => ({
+        ...metal,
+        rank: index + 1,
+      }));
+      return NextResponse.json(rankedMockData);
     }
 
     // Update metals with real price data
@@ -96,12 +102,25 @@ export async function GET() {
       };
     });
 
-    return NextResponse.json(updatedMetals);
+    // Sort by market cap descending and assign ranks dynamically
+    const sortedByMarketCap = [...updatedMetals].sort((a, b) => b.marketCap - a.marketCap);
+    const metalsWithRank = sortedByMarketCap.map((metal, index) => ({
+      ...metal,
+      rank: index + 1,
+    }));
+
+    return NextResponse.json(metalsWithRank);
   } catch (error) {
     console.error('[API Route] Error fetching metal prices:', error);
 
     // Return mock data as fallback
     const mockDataWithFlag = mockMetals.map(metal => ({ ...metal, isMockData: true }));
-    return NextResponse.json(mockDataWithFlag);
+    // Sort by market cap and assign ranks
+    const sortedMockData = [...mockDataWithFlag].sort((a, b) => b.marketCap - a.marketCap);
+    const rankedMockData = sortedMockData.map((metal, index) => ({
+      ...metal,
+      rank: index + 1,
+    }));
+    return NextResponse.json(rankedMockData);
   }
 }

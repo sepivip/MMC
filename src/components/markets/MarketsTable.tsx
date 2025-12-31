@@ -35,8 +35,8 @@ interface MarketsTableProps {
 export function MarketsTable({ metals, onMetalClick, onWatchlistToggle }: MarketsTableProps) {
   const [search, setSearch] = useState('');
   const [categoryFilter, setCategoryFilter] = useState<MetalCategory | 'all'>('all');
-  const [sortField, setSortField] = useState<SortField>('rank');
-  const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
+  const [sortField, setSortField] = useState<SortField>('marketCap');
+  const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
 
   const handleSort = (field: SortField) => {
     if (sortField === field) {
