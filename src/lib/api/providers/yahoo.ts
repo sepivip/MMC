@@ -1,13 +1,16 @@
 /**
  * Yahoo Finance API Provider
  * Fetches commodity/metal prices from Yahoo Finance
- * Uses yahoo-finance2 npm package
+ * Uses yahoo-finance2 v3 npm package
  * Fallback provider when FMP is unavailable
  */
 
-import yahooFinance from 'yahoo-finance2';
+import YahooFinance from 'yahoo-finance2';
 import { MetalPriceProvider, MetalQuote } from './types';
 import { metalTickers } from '@/lib/yahooTickers';
+
+// Create YahooFinance instance (v3 API)
+const yahooFinance = new YahooFinance();
 
 interface QuoteData {
   symbol: string;
@@ -24,8 +27,7 @@ export class YahooProvider implements MetalPriceProvider {
   async isAvailable(): Promise<boolean> {
     try {
       // Test with a simple quote request for gold
-      // Using 'any' type to work around yahoo-finance2 v3 type issues
-      const testQuote: any = await (yahooFinance.quote as any)('GC=F');
+      const testQuote: any = await yahooFinance.quote('GC=F');
       return !!(testQuote && typeof testQuote === 'object' && testQuote.regularMarketPrice);
     } catch (error) {
       console.error('Yahoo Finance availability check failed:', error);
@@ -52,8 +54,7 @@ export class YahooProvider implements MetalPriceProvider {
       // Batch request: fetch all quotes at once
       let rawQuotes: any[] = [];
       try {
-        // Using 'any' type to work around yahoo-finance2 v3 type issues
-        const batchQuotes = await (yahooFinance.quote as any)(tickers);
+        const batchQuotes = await yahooFinance.quote(tickers);
         rawQuotes = Array.isArray(batchQuotes) ? batchQuotes : [batchQuotes];
       } catch (err: any) {
         console.error('[Yahoo] Batch quote request failed:', err.message);
