@@ -114,7 +114,7 @@ export async function GET() {
 
       if (!quote || !quote.regularMarketPrice) {
         // Return mock data if no quote available
-        return metal;
+        return { ...metal, isMockData: true };
       }
 
       // Calculate percentage changes
@@ -173,6 +173,7 @@ export async function GET() {
         athPrice: athPrice ? parseFloat(athPrice.toFixed(2)) : undefined,
         athDate,
         percentFromAth,
+        isMockData: false, // Real data from Yahoo Finance
       };
     });
 
@@ -180,7 +181,8 @@ export async function GET() {
   } catch (error) {
     console.error('Error fetching metal prices:', error);
 
-    // Return mock data as fallback
-    return NextResponse.json(mockMetals);
+    // Return mock data as fallback with isMockData flag
+    const mockDataWithFlag = mockMetals.map(metal => ({ ...metal, isMockData: true }));
+    return NextResponse.json(mockDataWithFlag);
   }
 }

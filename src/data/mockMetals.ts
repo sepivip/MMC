@@ -88,15 +88,15 @@ export const mockMetals: Metal[] = [
     name: 'Copper',
     symbol: 'HG',
     category: 'industrial',
-    price: 8245.50,
-    priceUnit: 'ton',
+    price: 3.74,
+    priceUnit: 'lb',
     change24h: 0.87,
     change7d: 2.34,
     marketCap: 980000000000,
     supply: 1000000000,  // Global reserves in tonnes (USGS 2024)
     demand: 28000000,    // Annual demand in tonnes
     production: 23000000, // Annual mine production (USGS 2024)
-    sparklineData: generateSparkline(8245.50, 0.02),
+    sparklineData: generateSparkline(3.74, 0.02),
     description: 'Copper is a reddish-brown metal with excellent electrical and thermal conductivity. It has been used by humans for over 10,000 years and is essential for modern infrastructure. Copper is widely used in electrical wiring, plumbing, roofing, and electronics. It is often viewed as an economic indicator due to its widespread use in construction and manufacturing.',
   },
   {
@@ -156,15 +156,15 @@ export const mockMetals: Metal[] = [
     name: 'Zinc',
     symbol: 'ZN',
     category: 'industrial',
-    price: 2567.80,
-    priceUnit: 'ton',
+    price: 1.16,
+    priceUnit: 'lb',
     change24h: -0.89,
     change7d: -2.15,
     marketCap: 65000000000,
     supply: 224000000,   // Global reserves in tonnes (USGS 2024)
     demand: 14000000,    // Annual demand in tonnes
     production: 12000000, // Annual mine production (USGS 2024)
-    sparklineData: generateSparkline(2567.80, 0.025),
+    sparklineData: generateSparkline(1.16, 0.025),
     description: 'Zinc is a bluish-white metal that is brittle at room temperature but becomes malleable when heated. It is primarily used for galvanizing steel to prevent rust and corrosion. Zinc is also used in alloys such as brass, die casting, and in batteries. China is the largest producer and consumer of zinc globally.',
   },
   {
@@ -190,15 +190,15 @@ export const mockMetals: Metal[] = [
     name: 'Lead',
     symbol: 'PB',
     category: 'industrial',
-    price: 2089.45,
-    priceUnit: 'ton',
+    price: 0.95,
+    priceUnit: 'lb',
     change24h: 0.45,
     change7d: 1.23,
     marketCap: 38000000000,
     supply: 90000000,    // Global reserves in tonnes (USGS 2024)
     demand: 13000000,    // Annual demand in tonnes
     production: 4500000, // Annual mine production (USGS 2024)
-    sparklineData: generateSparkline(2089.45, 0.02),
+    sparklineData: generateSparkline(0.95, 0.02),
     description: 'Lead is a heavy, soft, malleable metal with a bluish-white color when freshly cut. Despite toxicity concerns, lead remains important for lead-acid batteries used in vehicles, backup power systems, and energy storage. The majority of lead demand comes from battery recycling and production. China is the largest producer and consumer of lead.',
   },
   {
@@ -207,15 +207,15 @@ export const mockMetals: Metal[] = [
     name: 'Tin',
     symbol: 'SN',
     category: 'industrial',
-    price: 25670.50,
-    priceUnit: 'ton',
+    price: 11.64,
+    priceUnit: 'lb',
     change24h: 1.12,
     change7d: 2.89,
     marketCap: 28000000000,
     supply: 4900000,     // Global reserves in tonnes (USGS 2024)
     demand: 380000,      // Annual demand in tonnes
     production: 300000,  // Annual mine production (USGS 2024)
-    sparklineData: generateSparkline(25670.50, 0.03),
+    sparklineData: generateSparkline(11.64, 0.03),
     description: 'Tin is a silvery-white metal that is soft and malleable. It has been used since ancient times, primarily in bronze alloys. Today, tin is mainly used in solder for electronics, tin plating for food containers, and various chemical applications. China and Indonesia are the world\'s largest tin producers. Tin prices are influenced by electronics manufacturing demand.',
   },
 ];

@@ -20,6 +20,7 @@ export interface Metal {
   athDate?: string; // ISO date of ATH
   percentFromAth?: number; // % below ATH (negative number)
   description?: string; // About text for metal
+  isMockData?: boolean; // Indicates if this is using fallback mock data
 }
 
 export interface MetalNews {
