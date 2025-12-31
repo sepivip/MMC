@@ -1,51 +1,25 @@
 import { NextResponse } from 'next/server';
-import YahooFinance from 'yahoo-finance2';
-import { metalTickers, yahooFinanceUnits } from '@/lib/yahooTickers';
 import { mockMetals } from '@/data/mockMetals';
 import { Metal } from '@/types/metal';
+import { getMetalPriceService } from '@/lib/api/metalPriceService';
 
-interface QuoteData {
-  regularMarketPrice?: number;
-  regularMarketPreviousClose?: number;
-  fiftyTwoWeekLow?: number;
-  fiftyTwoWeekHigh?: number;
-  regularMarketChangePercent?: number;
-}
+// Cache response for 6 minutes (360 seconds)
+// FMP free tier: 250 calls/day, 6 min cache = 240 calls/day (safe margin)
+export const revalidate = parseInt(process.env.PRICE_CACHE_DURATION || '360');
 
-const yahooFinance = new YahooFinance({
-  suppressNotices: ['yahooSurvey']
-});
+// Generate realistic sparkline based on price and change
+function generateRealisticSparkline(price: number, change: number): number[] {
+  const data: number[] = [];
+  const basePrice = price * (1 - change / 100);
 
-// Cache response for 5 minutes - ATH requires historical data fetching
-// This prevents hitting Yahoo Finance rate limits
-export const revalidate = 300;
-
-// Fetch All-Time High for a ticker
-async function getATH(ticker: string): Promise<{ price: number; date: string } | null> {
-  try {
-    const result = await yahooFinance.chart(ticker, {
-      period1: '1970-01-01',
-      period2: new Date().toISOString().split('T')[0],
-      interval: '1mo',
-    });
-
-    if (!result.quotes?.length) return null;
-
-    let maxPrice = 0;
-    let maxDate = '';
-
-    for (const quote of result.quotes) {
-      if (quote.high && quote.high > maxPrice) {
-        maxPrice = quote.high;
-        maxDate = new Date(quote.date).toISOString();
-      }
-    }
-
-    return maxPrice > 0 ? { price: maxPrice, date: maxDate } : null;
-  } catch (err) {
-    console.error(`Failed to fetch ATH for ${ticker}:`, err);
-    return null;
+  for (let i = 0; i < 7; i++) {
+    const progress = i / 6;
+    const pricePoint = basePrice + (price - basePrice) * progress;
+    const noise = (Math.random() - 0.5) * price * 0.01;
+    data.push(parseFloat((pricePoint + noise).toFixed(2)));
   }
+
+  return data;
 }
 
 // Convert price to per-ton for market cap calculation
@@ -70,115 +44,63 @@ function convertToTonPrice(price: number, unit: string): number {
 
 export async function GET() {
   try {
-    // Fetch quotes for all metal tickers
-    const tickers = Object.values(metalTickers);
-    const metalIds = Object.keys(metalTickers);
+    // Get metal IDs to fetch
+    const metalIds = mockMetals.map(m => m.id);
 
-    // BATCH REQUEST: Fetch all quotes in a single request to reduce rate limits
-    let quotes: any[] = [];
-    try {
-      const batchQuotes = await yahooFinance.quote(tickers);
-      quotes = Array.isArray(batchQuotes) ? batchQuotes : [batchQuotes];
-    } catch (err: any) {
-      console.error('Failed to fetch batch quotes:', err.message);
-      // Return mock data immediately if batch quote fails
+    // Use the provider service to fetch prices (with automatic fallback)
+    const priceService = getMetalPriceService();
+    const { quotes, provider, isMockData } = await priceService.fetchMetalPrices(metalIds);
+
+    console.log(`[API Route] Using provider: ${provider}, isMockData: ${isMockData}`);
+
+    // If all providers failed, return mock data
+    if (isMockData || quotes.size === 0) {
+      console.warn('[API Route] All providers failed, returning mock data');
       const mockDataWithFlag = mockMetals.map(metal => ({ ...metal, isMockData: true }));
       return NextResponse.json(mockDataWithFlag);
     }
 
-    // Disable ATH fetching to avoid rate limits (can re-enable later with caching)
-    // const athPromises = tickers.map(ticker =>
-    //   getATH(ticker).catch(() => null)
-    // );
-    // const athResults = await Promise.all(athPromises);
-
-    // Convert quotes array to map for easier lookup
-    const quotesMap = new Map<string, QuoteData>();
-
-    quotes.forEach((quote) => {
-      if (quote && typeof quote === 'object' && quote.symbol) {
-        quotesMap.set(quote.symbol, quote as QuoteData);
-      }
-    });
-
-    // ATH map is now empty (disabled to avoid rate limits)
-    const athMap = new Map<string, { price: number; date: string } | null>();
-
-    // Update mock metals with real prices
+    // Update metals with real price data
     const updatedMetals: Metal[] = mockMetals.map(metal => {
-      const ticker = metalTickers[metal.id];
-      const quote = quotesMap.get(ticker);
+      const quote = quotes.get(metal.id);
 
-      if (!quote || !quote.regularMarketPrice) {
-        // Return mock data if no quote available
+      if (!quote) {
+        // No quote for this metal - return mock data
         return { ...metal, isMockData: true };
       }
 
-      // Calculate percentage changes
-      const currentPrice = quote.regularMarketPrice;
-      const previousClose = quote.regularMarketPreviousClose || currentPrice;
-      const change24h = ((currentPrice - previousClose) / previousClose) * 100;
+      // Calculate 7d change (for sparkline)
+      const change7d = quote.changePercent; // Use 24h change as proxy for now
 
-      // For 7d change, use quote data if available
-      // const fiftyTwoWeekLow = quote.fiftyTwoWeekLow || currentPrice;
-      // const fiftyTwoWeekHigh = quote.fiftyTwoWeekHigh || currentPrice;
-      const change7d = quote.regularMarketChangePercent || 0;
-
-      // Generate sparkline based on recent price action
-      const generateRealisticSparkline = (price: number, change: number): number[] => {
-        const data: number[] = [];
-        const basePrice = price * (1 - change / 100);
-
-        for (let i = 0; i < 7; i++) {
-          const progress = i / 6;
-          const pricePoint = basePrice + (price - basePrice) * progress;
-          const noise = (Math.random() - 0.5) * price * 0.01;
-          data.push(parseFloat((pricePoint + noise).toFixed(2)));
-        }
-
-        return data;
-      };
-
-      // Get the actual unit from Yahoo Finance
-      const realUnit = yahooFinanceUnits[metal.id] || metal.priceUnit;
-
-      // Calculate market cap dynamically: supply (tons) × price per ton
-      const pricePerTon = convertToTonPrice(currentPrice, realUnit);
+      // Calculate market cap: supply (tons) × price per ton
+      const pricePerTon = convertToTonPrice(quote.price, quote.priceUnit);
       const calculatedMarketCap = metal.supply * pricePerTon;
 
-      // Get ATH data - ensure ATH is never lower than current price
-      const ath = athMap.get(metal.id);
-      let athPrice = ath?.price ?? currentPrice;
-      let athDate = ath?.date;
-
-      // If current price is higher than historical ATH, current price is the new ATH
-      if (currentPrice > athPrice) {
-        athPrice = currentPrice;
-        athDate = new Date().toISOString();
-      }
-
-      const percentFromAth = parseFloat((((currentPrice - athPrice) / athPrice) * 100).toFixed(2));
+      // For now, use current price as ATH (can add historical data later)
+      const athPrice = quote.price;
+      const athDate = new Date().toISOString();
+      const percentFromAth = 0; // At ATH
 
       return {
         ...metal,
-        price: parseFloat(currentPrice.toFixed(2)),
-        priceUnit: realUnit, // Use actual Yahoo Finance unit
-        change24h: parseFloat(change24h.toFixed(2)),
+        price: parseFloat(quote.price.toFixed(2)),
+        priceUnit: quote.priceUnit,
+        change24h: parseFloat(quote.changePercent.toFixed(2)),
         change7d: parseFloat(change7d.toFixed(2)),
-        marketCap: Math.round(calculatedMarketCap), // Dynamic market cap
-        sparklineData: generateRealisticSparkline(currentPrice, change7d),
-        athPrice: athPrice ? parseFloat(athPrice.toFixed(2)) : undefined,
+        marketCap: Math.round(calculatedMarketCap),
+        sparklineData: generateRealisticSparkline(quote.price, change7d),
+        athPrice: parseFloat(athPrice.toFixed(2)),
         athDate,
         percentFromAth,
-        isMockData: false, // Real data from Yahoo Finance
+        isMockData: false, // Real data from provider
       };
     });
 
     return NextResponse.json(updatedMetals);
   } catch (error) {
-    console.error('Error fetching metal prices:', error);
+    console.error('[API Route] Error fetching metal prices:', error);
 
-    // Return mock data as fallback with isMockData flag
+    // Return mock data as fallback
     const mockDataWithFlag = mockMetals.map(metal => ({ ...metal, isMockData: true }));
     return NextResponse.json(mockDataWithFlag);
   }
