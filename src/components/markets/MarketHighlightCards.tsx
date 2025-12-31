@@ -61,8 +61,11 @@ export function MarketHighlightCards({ metals, onMetalClick }: MarketHighlightCa
     (m) => m.percentFromAth !== undefined
   );
 
-  const formatPrice = (price: number, unit: string) => {
-    return `$${price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}/${unit}`;
+  const formatPrice = (metal: Metal) => {
+    if (metal.isMockData) {
+      return '-';
+    }
+    return `$${metal.price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}/${metal.priceUnit}`;
   };
 
   const getCategoryColor = (category: string) => {
@@ -180,29 +183,41 @@ export function MarketHighlightCards({ metals, onMetalClick }: MarketHighlightCa
                   <div className="text-sm text-muted-foreground font-mono">{metal.symbol}</div>
                 </div>
                 <div className="w-20 h-12 flex-shrink-0">
-                  <MiniChart data={metal.sparklineData} isPositive={metal.change7d >= 0} />
+                  {metal.isMockData ? (
+                    <div className="flex items-center justify-center h-full text-muted-foreground text-xs">
+                      -
+                    </div>
+                  ) : (
+                    <MiniChart data={metal.sparklineData} isPositive={metal.change7d >= 0} />
+                  )}
                 </div>
               </div>
 
               {/* Price & Change */}
               <div className="mt-3 flex items-end justify-between gap-2">
                 <div className="font-mono text-sm font-medium truncate">
-                  {formatPrice(metal.price, metal.priceUnit)}
+                  {formatPrice(metal)}
                 </div>
-                <div
-                  className={cn(
-                    'flex items-center gap-1 text-sm font-bold flex-shrink-0',
-                    isPositive ? 'text-green-500' : 'text-red-500'
-                  )}
-                >
-                  {isPositive ? (
-                    <TrendingUp className="h-3.5 w-3.5" />
-                  ) : (
-                    <TrendingDown className="h-3.5 w-3.5" />
-                  )}
-                  {isPositive ? '+' : ''}
-                  {metal.change24h.toFixed(2)}%
-                </div>
+                {metal.isMockData ? (
+                  <div className="text-sm text-muted-foreground flex-shrink-0">
+                    -
+                  </div>
+                ) : (
+                  <div
+                    className={cn(
+                      'flex items-center gap-1 text-sm font-bold flex-shrink-0',
+                      isPositive ? 'text-green-500' : 'text-red-500'
+                    )}
+                  >
+                    {isPositive ? (
+                      <TrendingUp className="h-3.5 w-3.5" />
+                    ) : (
+                      <TrendingDown className="h-3.5 w-3.5" />
+                    )}
+                    {isPositive ? '+' : ''}
+                    {metal.change24h.toFixed(2)}%
+                  </div>
+                )}
               </div>
 
               {/* Subtitle */}
