@@ -123,8 +123,8 @@ export async function GET() {
       const change24h = ((currentPrice - previousClose) / previousClose) * 100;
 
       // For 7d change, use quote data if available
-      const fiftyTwoWeekLow = quote.fiftyTwoWeekLow || currentPrice;
-      const fiftyTwoWeekHigh = quote.fiftyTwoWeekHigh || currentPrice;
+      // const fiftyTwoWeekLow = quote.fiftyTwoWeekLow || currentPrice;
+      // const fiftyTwoWeekHigh = quote.fiftyTwoWeekHigh || currentPrice;
       const change7d = quote.regularMarketChangePercent || 0;
 
       // Generate sparkline based on recent price action

@@ -17,7 +17,8 @@ export function PriceConverter({ metal }: PriceConverterProps) {
   useEffect(() => {
     const amount = parseFloat(metalAmount) || 0;
     setUsdAmount((amount * metal.price).toFixed(2));
-  }, [metal.price, metalAmount]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [metal.price]);
 
   const handleMetalChange = (value: string) => {
     setMetalAmount(value);

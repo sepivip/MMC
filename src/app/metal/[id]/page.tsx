@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Star, TrendingUp, TrendingDown, ChevronRight, Share2 } from 'lucide-react';
+import { Star, TrendingUp, TrendingDown, ChevronRight, Share2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { PriceChart } from '@/components/metal/PriceChart';
 import { KeyStatistics } from '@/components/metal/KeyStatistics';
@@ -63,21 +63,6 @@ export default function MetalDetailPage({ params }: MetalDetailPageProps) {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background">
-        <header className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-50">
-          <div className="container mx-auto px-4 py-4">
-            <div className="flex items-center justify-between">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => router.push('/')}
-                className="gap-2"
-              >
-                <ArrowLeft className="h-4 w-4" />
-                Back to Markets
-              </Button>
-            </div>
-          </div>
-        </header>
         <main className="container mx-auto px-4 py-8">
           <div className="flex items-center justify-center min-h-[400px]">
             <div className="text-center">
@@ -131,20 +116,21 @@ export default function MetalDetailPage({ params }: MetalDetailPageProps) {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => router.push('/')}
-              className="gap-2"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              Back to Markets
-            </Button>
-            <div className="flex items-center gap-2">
+      {/* Main Content */}
+      <main className="container mx-auto px-4 py-6">
+        <div className="flex items-center justify-between mb-4">
+          {/* Breadcrumb */}
+          <nav className="flex items-center gap-1 text-sm text-muted-foreground">
+            <button onClick={() => router.push('/')} className="hover:text-foreground transition-colors">
+              Commodities
+            </button>
+            <ChevronRight className="h-4 w-4" />
+            <span>{getCategoryLabel(metal.category)}</span>
+            <ChevronRight className="h-4 w-4" />
+            <span className="text-foreground">{metal.name} ({metal.symbol})</span>
+          </nav>
+
+           <div className="flex items-center gap-2">
               <Button
                 variant={isWatchlisted ? 'default' : 'outline'}
                 size="sm"
@@ -164,23 +150,7 @@ export default function MetalDetailPage({ params }: MetalDetailPageProps) {
                 <span className="hidden sm:inline">Share</span>
               </Button>
             </div>
-          </div>
         </div>
-      </header>
-
-      {/* Main Content */}
-      <main className="container mx-auto px-4 py-6">
-        {/* Breadcrumb */}
-        <nav className="flex items-center gap-1 text-sm text-muted-foreground mb-6">
-          <button onClick={() => router.push('/')} className="hover:text-foreground transition-colors">
-            Commodities
-          </button>
-          <ChevronRight className="h-4 w-4" />
-          <span>{getCategoryLabel(metal.category)}</span>
-          <ChevronRight className="h-4 w-4" />
-          <span className="text-foreground">{metal.name} ({metal.symbol})</span>
-        </nav>
-
         {/* Metal Header */}
         <div className="mb-6">
           <div className="flex items-center gap-3 mb-2">
