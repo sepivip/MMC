@@ -5,7 +5,7 @@ import { getMetalPriceService } from '@/lib/api/metalPriceService';
 
 // Cache response for 6 minutes (360 seconds)
 // FMP free tier: 250 calls/day, 6 min cache = 240 calls/day (safe margin)
-export const revalidate = parseInt(process.env.PRICE_CACHE_DURATION || '360');
+export const revalidate = 360;
 
 // Generate realistic sparkline based on price and change
 function generateRealisticSparkline(price: number, change: number): number[] {
