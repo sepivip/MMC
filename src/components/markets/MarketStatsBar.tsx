@@ -1,7 +1,7 @@
 'use client';
 
 import { Metal } from '@/types/metal';
-import { TrendingUp, TrendingDown } from 'lucide-react';
+import { TrendingUp, TrendingDown, Activity, CircleDollarSign, Crown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface MarketStatsBarProps {
@@ -39,50 +39,91 @@ export function MarketStatsBar({ metals }: MarketStatsBarProps) {
 
   const isPositive = weightedChange >= 0;
 
+  const stats = [
+    {
+      label: 'Market Cap',
+      value: isMockData ? '-' : formatNumber(totalMarketCap),
+      icon: CircleDollarSign,
+      iconColor: 'text-primary/70',
+    },
+    {
+      label: '24h Volume',
+      value: isMockData ? '-' : formatNumber(estimatedVolume),
+      icon: Activity,
+      iconColor: 'text-blue-400/70',
+    },
+    {
+      label: 'Dominance',
+      value: isMockData ? '-' : `Gold ${goldDominance}%`,
+      icon: Crown,
+      iconColor: 'text-amber-400/70',
+      valueColor: 'text-primary',
+    },
+  ];
+
   return (
-    <div className="bg-card/30 border-b border-border">
+    <div
+      className="bg-gradient-to-r from-card/50 via-card/30 to-card/50 border-b border-border/50 backdrop-blur-sm"
+      role="region"
+      aria-label="Market statistics"
+    >
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between gap-4 py-2 overflow-x-auto text-sm">
-          {/* Global Market Cap */}
-          <div className="flex items-center gap-2 whitespace-nowrap">
-            <span className="text-muted-foreground">Global Market Cap:</span>
-            <span className="font-semibold">{isMockData ? '-' : formatNumber(totalMarketCap)}</span>
+        <div className="flex items-center justify-between gap-6 py-2.5 overflow-x-auto scrollbar-none">
+          {/* Stats Grid */}
+          <div className="flex items-center gap-6 min-w-0">
+            {stats.map(({ label, value, icon: Icon, iconColor, valueColor }) => (
+              <div
+                key={label}
+                className="flex items-center gap-2 whitespace-nowrap group"
+              >
+                <Icon
+                  className={cn('h-3.5 w-3.5 flex-shrink-0 transition-colors', iconColor)}
+                  aria-hidden="true"
+                />
+                <span className="text-xs text-muted-foreground/80 hidden sm:inline">{label}:</span>
+                <span className={cn(
+                  'text-sm font-semibold tabular-nums',
+                  valueColor || 'text-foreground'
+                )}>
+                  {value}
+                </span>
+              </div>
+            ))}
           </div>
 
-          {/* 24h Volume */}
-          <div className="flex items-center gap-2 whitespace-nowrap">
-            <span className="text-muted-foreground">24h Vol:</span>
-            <span className="font-semibold">{isMockData ? '-' : formatNumber(estimatedVolume)}</span>
-          </div>
+          {/* Separator - visible on larger screens */}
+          <div className="hidden md:block h-4 w-px bg-border/50" aria-hidden="true" />
 
-          {/* Gold Dominance */}
-          <div className="flex items-center gap-2 whitespace-nowrap">
-            <span className="text-muted-foreground">Dominance:</span>
-            <span className="font-semibold text-primary">
-              {isMockData ? '-' : `Gold ${goldDominance}%`}
-            </span>
-          </div>
-
-          {/* Market Change */}
-          <div className="flex items-center gap-2 whitespace-nowrap">
+          {/* Market Change Indicator */}
+          <div className="flex items-center gap-2 whitespace-nowrap flex-shrink-0">
             {isMockData ? (
-              <span className="text-muted-foreground font-semibold">
+              <span className="text-muted-foreground font-semibold text-sm">
                 Metals Market -
               </span>
             ) : (
-              <span
+              <div
                 className={cn(
-                  'flex items-center gap-1 font-semibold',
-                  isPositive ? 'text-green-500' : 'text-red-500'
+                  'flex items-center gap-1.5 text-sm font-semibold',
+                  'px-3 py-1 rounded-full',
+                  'transition-all duration-300',
+                  isPositive
+                    ? 'text-green-400 bg-green-500/10'
+                    : 'text-red-400 bg-red-500/10'
                 )}
               >
                 {isPositive ? (
-                  <TrendingUp className="h-4 w-4" />
+                  <TrendingUp className="h-3.5 w-3.5" aria-hidden="true" />
                 ) : (
-                  <TrendingDown className="h-4 w-4" />
+                  <TrendingDown className="h-3.5 w-3.5" aria-hidden="true" />
                 )}
-                Metals Market is {isPositive ? 'up' : 'down'} {Math.abs(weightedChange).toFixed(1)}% today
-              </span>
+                <span className="hidden sm:inline">Markets</span>
+                <span className={cn(
+                  isPositive ? 'text-green-400' : 'text-red-400'
+                )}>
+                  {isPositive ? '+' : ''}{weightedChange.toFixed(2)}%
+                </span>
+                <span className="text-muted-foreground/60 text-xs font-normal hidden md:inline">today</span>
+              </div>
             )}
           </div>
         </div>

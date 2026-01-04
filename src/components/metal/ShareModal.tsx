@@ -8,10 +8,11 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { ShareCard } from './ShareCard';
-import { Download, Copy, Check, RectangleHorizontal, Square } from 'lucide-react';
+import { Download, Copy, Check, RectangleHorizontal, Square, Share2, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 
@@ -84,67 +85,140 @@ export function ShareModal({ metal, open, onOpenChange }: ShareModalProps) {
     }
   };
 
+  const formatOptions = [
+    {
+      id: 'landscape' as const,
+      label: 'Landscape',
+      sublabel: '1200x630',
+      icon: RectangleHorizontal,
+      description: 'Ideal for Twitter, LinkedIn, Facebook',
+    },
+    {
+      id: 'square' as const,
+      label: 'Square',
+      sublabel: '1080x1080',
+      icon: Square,
+      description: 'Ideal for Instagram, Discord',
+    },
+  ];
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-fit">
-        <DialogHeader>
-          <DialogTitle>Share Market Data</DialogTitle>
-          <p className="text-sm text-muted-foreground">
-            Customize your card and export it for social media.
-          </p>
+      <DialogContent className="max-w-fit sm:max-w-2xl">
+        <DialogHeader className="pb-2">
+          <DialogTitle className="flex items-center gap-2 text-xl">
+            <Share2 className="h-5 w-5 text-primary" aria-hidden="true" />
+            Share {metal.name} Data
+          </DialogTitle>
+          <DialogDescription className="text-muted-foreground">
+            Create a beautiful shareable image for social media
+          </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-4">
+        <div className="space-y-5">
           {/* Format Selection */}
           <div>
-            <label className="text-sm font-medium mb-2 block">FORMAT</label>
-            <div className="flex gap-2">
-              <Button
-                variant={format === 'landscape' ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => setFormat('landscape')}
-                className="gap-2"
-              >
-                <RectangleHorizontal className="h-4 w-4" />
-                Landscape
-              </Button>
-              <Button
-                variant={format === 'square' ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => setFormat('square')}
-                className="gap-2"
-              >
-                <Square className="h-4 w-4" />
-                Square
-              </Button>
+            <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3 block">
+              Select Format
+            </label>
+            <div className="grid grid-cols-2 gap-3">
+              {formatOptions.map((option) => {
+                const Icon = option.icon;
+                const isSelected = format === option.id;
+                return (
+                  <button
+                    key={option.id}
+                    onClick={() => setFormat(option.id)}
+                    className={cn(
+                      'flex items-start gap-3 p-3 rounded-lg border-2 text-left',
+                      'transition-all duration-200',
+                      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background',
+                      isSelected
+                        ? 'border-primary bg-primary/5'
+                        : 'border-border/50 hover:border-border hover:bg-accent/30'
+                    )}
+                    aria-pressed={isSelected}
+                  >
+                    <div className={cn(
+                      'p-2 rounded-md transition-colors',
+                      isSelected ? 'bg-primary/15 text-primary' : 'bg-muted/50 text-muted-foreground'
+                    )}>
+                      <Icon className="h-4 w-4" aria-hidden="true" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <span className={cn(
+                          'font-medium text-sm',
+                          isSelected ? 'text-foreground' : 'text-foreground/80'
+                        )}>
+                          {option.label}
+                        </span>
+                        <span className="text-[10px] font-mono text-muted-foreground/70">
+                          {option.sublabel}
+                        </span>
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-0.5">
+                        {option.description}
+                      </p>
+                    </div>
+                  </button>
+                );
+              })}
             </div>
           </div>
 
           {/* Preview */}
-          <div className="border border-border rounded-lg p-4 bg-muted/50 overflow-auto max-h-[500px]">
-            <div className="flex justify-center">
-              <ShareCard ref={cardRef} metal={metal} format={format} />
+          <div>
+            <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3 block">
+              Preview
+            </label>
+            <div className={cn(
+              'border border-border/50 rounded-xl p-4',
+              'bg-gradient-to-br from-muted/30 to-muted/10',
+              'overflow-auto max-h-[420px]',
+              'scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent'
+            )}>
+              <div className="flex justify-center">
+                <div className="shadow-2xl shadow-black/30 rounded-xl overflow-hidden">
+                  <ShareCard ref={cardRef} metal={metal} format={format} />
+                </div>
+              </div>
             </div>
           </div>
 
           {/* Actions */}
-          <div className="flex gap-2">
+          <div className="flex gap-3 pt-2">
             <Button
               onClick={handleDownload}
-              disabled={isDownloading}
-              className="flex-1 gap-2"
+              disabled={isDownloading || isCopying}
+              className="flex-1 gap-2 h-10"
+              size="default"
             >
-              <Download className="h-4 w-4" />
-              {isDownloading ? 'Downloading...' : 'Download PNG'}
+              {isDownloading ? (
+                <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+              ) : (
+                <Download className="h-4 w-4" aria-hidden="true" />
+              )}
+              {isDownloading ? 'Generating...' : 'Download PNG'}
             </Button>
             <Button
               variant="outline"
               onClick={handleCopy}
-              disabled={isCopying}
-              className={cn('gap-2', copied && 'text-green-500')}
+              disabled={isCopying || isDownloading}
+              className={cn(
+                'gap-2 h-10 min-w-[120px]',
+                'transition-colors duration-200',
+                copied && 'text-green-400 border-green-400/50 bg-green-500/10'
+              )}
             >
-              {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-              {copied ? 'Copied!' : 'Copy'}
+              {isCopying ? (
+                <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+              ) : copied ? (
+                <Check className="h-4 w-4" aria-hidden="true" />
+              ) : (
+                <Copy className="h-4 w-4" aria-hidden="true" />
+              )}
+              {isCopying ? 'Copying...' : copied ? 'Copied!' : 'Copy Image'}
             </Button>
           </div>
         </div>

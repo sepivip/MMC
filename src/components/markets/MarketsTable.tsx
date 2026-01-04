@@ -131,11 +131,11 @@ export function MarketsTable({ metals, onMetalClick, onWatchlistToggle }: Market
   const getCategoryColor = (category: MetalCategory) => {
     switch (category) {
       case 'precious':
-        return 'bg-primary/20 text-primary border-primary/30';
+        return 'bg-amber-500/15 text-amber-400 border-amber-500/30';
       case 'industrial':
-        return 'bg-blue-500/20 text-blue-400 border-blue-500/30';
+        return 'bg-blue-500/15 text-blue-400 border-blue-500/30';
       case 'battery':
-        return 'bg-purple-500/20 text-purple-400 border-purple-500/30';
+        return 'bg-purple-500/15 text-purple-400 border-purple-500/30';
     }
   };
 
@@ -147,7 +147,7 @@ export function MarketsTable({ metals, onMetalClick, onWatchlistToggle }: Market
           placeholder="Search metals..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="sm:max-w-xs"
+          className="sm:max-w-xs transition-all duration-200 focus:ring-2 focus:ring-primary/20"
           aria-label="Search metals by name or symbol"
           type="search"
         />
@@ -168,10 +168,10 @@ export function MarketsTable({ metals, onMetalClick, onWatchlistToggle }: Market
       </div>
 
       {/* Table */}
-      <div className="border rounded-lg overflow-x-auto" role="region" aria-label="Metal market data table">
+      <div className="border border-border/50 rounded-xl overflow-x-auto bg-card/30" role="region" aria-label="Metal market data table">
         <Table>
-          <TableHeader className="sticky top-0 bg-card">
-            <TableRow>
+          <TableHeader className="sticky top-0 bg-card/95 backdrop-blur-sm">
+            <TableRow className="border-border/50 hover:bg-transparent">
               <TableHead className="w-12" aria-label="Watchlist"></TableHead>
               <TableHead
                 className="cursor-pointer hover:text-foreground"
@@ -239,7 +239,11 @@ export function MarketsTable({ metals, onMetalClick, onWatchlistToggle }: Market
             {filteredAndSortedMetals.map((metal) => (
               <TableRow
                 key={metal.id}
-                className="cursor-pointer hover:bg-accent/50"
+                className={cn(
+                  'cursor-pointer group',
+                  'transition-colors duration-200',
+                  'hover:bg-accent/40 border-border/30'
+                )}
                 onClick={() => onMetalClick(metal.id)}
                 role="button"
                 tabIndex={0}
@@ -252,43 +256,53 @@ export function MarketsTable({ metals, onMetalClick, onWatchlistToggle }: Market
                       e.stopPropagation();
                       onWatchlistToggle(metal.id);
                     }}
-                    className="text-muted-foreground hover:text-primary transition-colors"
+                    className={cn(
+                      'p-1.5 rounded-md transition-all duration-200',
+                      'hover:bg-primary/10',
+                      metal.isWatchlisted
+                        ? 'text-primary'
+                        : 'text-muted-foreground/50 hover:text-primary'
+                    )}
                     aria-label={metal.isWatchlisted ? `Remove ${metal.name} from watchlist` : `Add ${metal.name} to watchlist`}
                     aria-pressed={metal.isWatchlisted}
                   >
                     <Star
-                      className={cn('h-4 w-4', metal.isWatchlisted && 'fill-primary text-primary')}
+                      className={cn(
+                        'h-4 w-4 transition-transform duration-200',
+                        metal.isWatchlisted && 'fill-current scale-110'
+                      )}
                       aria-hidden="true"
                     />
                   </button>
                 </TableCell>
-                <TableCell className="font-medium">{metal.rank}</TableCell>
+                <TableCell className="font-medium text-muted-foreground tabular-nums">{metal.rank}</TableCell>
                 <TableCell>
                   <div className="flex items-center gap-3">
                     <div>
-                      <div className="font-semibold">{metal.name}</div>
+                      <div className="font-semibold group-hover:text-foreground transition-colors">{metal.name}</div>
                       <div className="text-sm text-muted-foreground flex items-center gap-2">
-                        {metal.symbol}
-                        <Badge variant="outline" className={cn('text-xs', getCategoryColor(metal.category))}>
+                        <span className="font-mono">{metal.symbol}</span>
+                        <Badge variant="outline" className={cn('text-[10px] h-5', getCategoryColor(metal.category))}>
                           {metal.category}
                         </Badge>
                       </div>
                     </div>
                   </div>
                 </TableCell>
-                <TableCell className="text-right font-mono">
+                <TableCell className="text-right font-mono font-semibold tabular-nums">
                   {metal.isMockData ? '-' : formatPrice(metal.price, metal.priceUnit)}
                 </TableCell>
-                <TableCell className="text-right font-mono text-muted-foreground">
+                <TableCell className="text-right font-mono text-muted-foreground/70 tabular-nums text-sm">
                   {metal.isMockData ? '-' : formatKgPrice(metal.price, metal.priceUnit)}
                 </TableCell>
-                <TableCell className="text-right font-mono">
+                <TableCell className="text-right font-mono tabular-nums">
                   {metal.isMockData ? (
                     '-'
                   ) : (
                     <span
                       className={cn(
-                        metal.change24h >= 0 ? 'text-green-500' : 'text-red-500'
+                        'font-semibold',
+                        metal.change24h >= 0 ? 'text-green-400' : 'text-red-400'
                       )}
                     >
                       {metal.change24h >= 0 ? '+' : ''}
@@ -296,13 +310,14 @@ export function MarketsTable({ metals, onMetalClick, onWatchlistToggle }: Market
                     </span>
                   )}
                 </TableCell>
-                <TableCell className="text-right font-mono">
+                <TableCell className="text-right font-mono tabular-nums">
                   {metal.isMockData ? (
                     '-'
                   ) : (
                     <span
                       className={cn(
-                        metal.change7d >= 0 ? 'text-green-500' : 'text-red-500'
+                        'font-semibold',
+                        metal.change7d >= 0 ? 'text-green-400' : 'text-red-400'
                       )}
                     >
                       {metal.change7d >= 0 ? '+' : ''}
@@ -310,19 +325,19 @@ export function MarketsTable({ metals, onMetalClick, onWatchlistToggle }: Market
                     </span>
                   )}
                 </TableCell>
-                <TableCell className="text-right font-mono">
+                <TableCell className="text-right font-mono font-semibold tabular-nums">
                   {metal.isMockData ? '-' : formatMarketCap(metal.marketCap)}
                 </TableCell>
-                <TableCell className="text-right text-muted-foreground">
+                <TableCell className="text-right text-muted-foreground text-sm">
                   {formatSupply(metal.supply)}
                 </TableCell>
-                <TableCell className="text-right font-mono">
+                <TableCell className="text-right font-mono tabular-nums">
                   <div>
-                    <div>{formatAthPrice(metal.athPrice, metal.priceUnit)}</div>
+                    <div className="text-sm">{formatAthPrice(metal.athPrice, metal.priceUnit)}</div>
                     {metal.percentFromAth !== undefined && (
                       <div className={cn(
-                        'text-xs',
-                        metal.percentFromAth >= -5 ? 'text-green-500' : 'text-muted-foreground'
+                        'text-xs font-semibold',
+                        metal.percentFromAth >= -5 ? 'text-green-400' : 'text-muted-foreground/60'
                       )}>
                         {metal.percentFromAth.toFixed(1)}%
                       </div>
@@ -330,11 +345,13 @@ export function MarketsTable({ metals, onMetalClick, onWatchlistToggle }: Market
                   </div>
                 </TableCell>
                 <TableCell>
-                  {metal.isMockData ? (
-                    <div className="text-center text-muted-foreground">-</div>
-                  ) : (
-                    <MiniChart data={metal.sparklineData} isPositive={metal.change7d >= 0} />
-                  )}
+                  <div className="w-[100px] h-[40px]">
+                    {metal.isMockData ? (
+                      <div className="flex items-center justify-center h-full text-muted-foreground text-xs">-</div>
+                    ) : (
+                      <MiniChart data={metal.sparklineData} isPositive={metal.change7d >= 0} />
+                    )}
+                  </div>
                 </TableCell>
               </TableRow>
             ))}
@@ -343,8 +360,12 @@ export function MarketsTable({ metals, onMetalClick, onWatchlistToggle }: Market
       </div>
 
       {filteredAndSortedMetals.length === 0 && (
-        <div className="text-center py-12 text-muted-foreground">
-          No metals found matching your criteria.
+        <div className="text-center py-16 text-muted-foreground">
+          <div className="w-12 h-12 rounded-full bg-muted/30 flex items-center justify-center mx-auto mb-4">
+            <Star className="h-6 w-6 text-muted-foreground/50" />
+          </div>
+          <p className="font-medium">No metals found</p>
+          <p className="text-sm mt-1">Try adjusting your search or filter criteria</p>
         </div>
       )}
     </div>
