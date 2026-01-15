@@ -7,7 +7,7 @@
 
 import YahooFinance from 'yahoo-finance2';
 import { MetalPriceProvider, MetalQuote } from './types';
-import { metalTickers } from '@/lib/yahooTickers';
+import { metalTickers, yahooFinanceUnits } from '@/lib/yahooTickers';
 
 // Create YahooFinance instance (v3 API)
 const yahooFinance = new YahooFinance();
@@ -133,17 +133,9 @@ export class YahooProvider implements MetalPriceProvider {
 
   /**
    * Get the appropriate price unit for a metal
+   * Uses authoritative unit mapping from yahooTickers
    */
   private getPriceUnit(metalId: string): 'oz' | 'lb' | 'ton' | 'kg' {
-    const preciousMetals = ['gold', 'silver', 'platinum', 'palladium'];
-    const poundMetals = ['copper', 'zinc', 'lead', 'tin', 'nickel'];
-
-    if (preciousMetals.includes(metalId)) {
-      return 'oz';
-    } else if (poundMetals.includes(metalId)) {
-      return 'lb';
-    } else {
-      return 'ton'; // Default for industrial metals
-    }
+    return yahooFinanceUnits[metalId] || 'ton';
   }
 }

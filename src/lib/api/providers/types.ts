@@ -30,7 +30,7 @@ export interface MetalPriceProvider {
   isAvailable(): Promise<boolean>;
 }
 
-export type ProviderType = 'fmp' | 'yahoo' | 'auto';
+export type ProviderType = 'fmp' | 'yahoo' | 'yahoo-direct' | 'auto';
 
 export interface ProviderConfig {
   type: ProviderType;

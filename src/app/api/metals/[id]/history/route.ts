@@ -95,23 +95,56 @@ export async function GET(
   } catch (error) {
     console.error('Error fetching historical data:', error);
 
-    // Return mock data as fallback
-    const mockData = generateMockHistoricalData();
+    // Return mock data as fallback, respecting the requested timeframe
+    const { searchParams } = new URL(request.url);
+    const timeframe = (searchParams.get('timeframe') as ChartTimeframe) || '7D';
+    const mockData = generateMockHistoricalData(timeframe);
     return NextResponse.json(mockData);
   }
 }
 
-// Generate mock historical data as fallback
-function generateMockHistoricalData(): ChartDataPoint[] {
+// Generate mock historical data as fallback, respecting timeframe
+function generateMockHistoricalData(timeframe: ChartTimeframe): ChartDataPoint[] {
   const data: ChartDataPoint[] = [];
   const now = new Date();
   const basePrice = 2000;
 
-  for (let i = 7; i >= 0; i--) {
-    const date = new Date(now);
-    date.setDate(date.getDate() - i);
+  // Determine number of points and interval based on timeframe
+  let numPoints: number;
+  let intervalMs: number;
 
-    const price = basePrice + (Math.random() - 0.5) * 200;
+  switch (timeframe) {
+    case '1D':
+      numPoints = 24; // Hourly for 1 day
+      intervalMs = 60 * 60 * 1000; // 1 hour
+      break;
+    case '7D':
+      numPoints = 7 * 24; // Hourly for 7 days
+      intervalMs = 60 * 60 * 1000; // 1 hour
+      break;
+    case '1M':
+      numPoints = 30; // Daily for 1 month
+      intervalMs = 24 * 60 * 60 * 1000; // 1 day
+      break;
+    case '1Y':
+      numPoints = 52; // Weekly for 1 year
+      intervalMs = 7 * 24 * 60 * 60 * 1000; // 1 week
+      break;
+    case 'ALL':
+      numPoints = 60; // Monthly for 5 years
+      intervalMs = 30 * 24 * 60 * 60 * 1000; // ~1 month
+      break;
+    default:
+      numPoints = 7;
+      intervalMs = 24 * 60 * 60 * 1000;
+  }
+
+  for (let i = numPoints - 1; i >= 0; i--) {
+    const date = new Date(now.getTime() - i * intervalMs);
+    // Add some random walk to make it look realistic
+    const trend = (numPoints - i) / numPoints * 0.05; // Slight upward trend
+    const noise = (Math.random() - 0.5) * 0.02;
+    const price = basePrice * (1 + trend + noise);
 
     data.push({
       date: date.toISOString(),

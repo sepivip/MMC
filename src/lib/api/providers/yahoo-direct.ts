@@ -5,7 +5,7 @@
  */
 
 import { MetalPriceProvider, MetalQuote } from './types';
-import { metalTickers } from '@/lib/yahooTickers';
+import { metalTickers, yahooFinanceUnits } from '@/lib/yahooTickers';
 
 interface ChartMeta {
   symbol: string;
@@ -139,15 +139,7 @@ export class YahooDirectProvider implements MetalPriceProvider {
   }
 
   private getPriceUnit(metalId: string): 'oz' | 'lb' | 'ton' | 'kg' {
-    const preciousMetals = ['gold', 'silver', 'platinum', 'palladium'];
-    const poundMetals = ['copper', 'zinc', 'lead', 'tin', 'nickel'];
-
-    if (preciousMetals.includes(metalId)) {
-      return 'oz';
-    } else if (poundMetals.includes(metalId)) {
-      return 'lb';
-    } else {
-      return 'ton';
-    }
+    // Use authoritative unit mapping from yahooTickers
+    return yahooFinanceUnits[metalId] || 'ton';
   }
 }

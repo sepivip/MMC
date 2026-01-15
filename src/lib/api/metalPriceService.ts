@@ -25,20 +25,43 @@ export class MetalPriceService {
   }
 
   /**
+   * Get the primary provider based on METAL_PRICE_PROVIDER config
+   */
+  private getPrimaryProvider(): MetalPriceProvider {
+    switch (this.providerType) {
+      case 'fmp':
+        return this.fmpProvider;
+      case 'yahoo':
+        return this.yahooProvider;
+      case 'yahoo-direct':
+      default:
+        return this.yahooDirectProvider;
+    }
+  }
+
+  /**
    * Get all providers to try in order
+   * Respects METAL_PRICE_PROVIDER for primary, then falls back to others
    */
   private getProvidersToTry(): MetalPriceProvider[] {
+    const primary = this.getPrimaryProvider();
+
     if (!this.enableFallback) {
-      return [this.yahooDirectProvider];
+      // Only use the configured provider, no fallback
+      return [primary];
     }
 
-    // Try Yahoo Direct first (uses /v8/chart/ endpoint which may have different rate limits)
-    // Then try Yahoo Finance2 (uses /v7/quote/ endpoint)
-    // Finally try FMP as last resort
-    return [
+    // Build fallback chain starting with configured provider
+    const allProviders = [
       this.yahooDirectProvider,
       this.yahooProvider,
       this.fmpProvider,
+    ];
+
+    // Put primary first, then others in default order
+    return [
+      primary,
+      ...allProviders.filter(p => p !== primary),
     ];
   }
 
