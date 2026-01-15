@@ -177,7 +177,8 @@ export function MarketsTable({ metals, onMetalClick, onWatchlistToggle }: Market
                 className="cursor-pointer hover:text-foreground"
                 onClick={() => handleSort('rank')}
                 tabIndex={0}
-                onKeyDown={(e) => e.key === 'Enter' && handleSort('rank')}
+                onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && (e.preventDefault(), handleSort('rank'))}
+                role="button"
                 aria-sort={sortField === 'rank' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}
               >
                 #
@@ -186,7 +187,8 @@ export function MarketsTable({ metals, onMetalClick, onWatchlistToggle }: Market
                 className="cursor-pointer hover:text-foreground min-w-[200px]"
                 onClick={() => handleSort('name')}
                 tabIndex={0}
-                onKeyDown={(e) => e.key === 'Enter' && handleSort('name')}
+                onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && (e.preventDefault(), handleSort('name'))}
+                role="button"
                 aria-sort={sortField === 'name' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}
               >
                 Metal
@@ -195,7 +197,8 @@ export function MarketsTable({ metals, onMetalClick, onWatchlistToggle }: Market
                 className="cursor-pointer hover:text-foreground text-right"
                 onClick={() => handleSort('price')}
                 tabIndex={0}
-                onKeyDown={(e) => e.key === 'Enter' && handleSort('price')}
+                onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && (e.preventDefault(), handleSort('price'))}
+                role="button"
                 aria-sort={sortField === 'price' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}
               >
                 Price
@@ -207,7 +210,8 @@ export function MarketsTable({ metals, onMetalClick, onWatchlistToggle }: Market
                 className="cursor-pointer hover:text-foreground text-right"
                 onClick={() => handleSort('change24h')}
                 tabIndex={0}
-                onKeyDown={(e) => e.key === 'Enter' && handleSort('change24h')}
+                onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && (e.preventDefault(), handleSort('change24h'))}
+                role="button"
                 aria-sort={sortField === 'change24h' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}
               >
                 24h %
@@ -216,7 +220,8 @@ export function MarketsTable({ metals, onMetalClick, onWatchlistToggle }: Market
                 className="cursor-pointer hover:text-foreground text-right"
                 onClick={() => handleSort('change7d')}
                 tabIndex={0}
-                onKeyDown={(e) => e.key === 'Enter' && handleSort('change7d')}
+                onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && (e.preventDefault(), handleSort('change7d'))}
+                role="button"
                 aria-sort={sortField === 'change7d' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}
               >
                 7d %
@@ -225,7 +230,8 @@ export function MarketsTable({ metals, onMetalClick, onWatchlistToggle }: Market
                 className="cursor-pointer hover:text-foreground text-right"
                 onClick={() => handleSort('marketCap')}
                 tabIndex={0}
-                onKeyDown={(e) => e.key === 'Enter' && handleSort('marketCap')}
+                onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && (e.preventDefault(), handleSort('marketCap'))}
+                role="button"
                 aria-sort={sortField === 'marketCap' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}
               >
                 Market Cap
@@ -245,10 +251,6 @@ export function MarketsTable({ metals, onMetalClick, onWatchlistToggle }: Market
                   'hover:bg-accent/40 border-border/30'
                 )}
                 onClick={() => onMetalClick(metal.id)}
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => e.key === 'Enter' && onMetalClick(metal.id)}
-                aria-label={`View details for ${metal.name}`}
               >
                 <TableCell>
                   <button
@@ -277,7 +279,14 @@ export function MarketsTable({ metals, onMetalClick, onWatchlistToggle }: Market
                 </TableCell>
                 <TableCell className="font-medium text-muted-foreground tabular-nums">{metal.rank}</TableCell>
                 <TableCell>
-                  <div className="flex items-center gap-3">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onMetalClick(metal.id);
+                    }}
+                    className="flex items-center gap-3 text-left w-full focus:outline-none focus:ring-2 focus:ring-primary/50 rounded-md -m-1 p-1"
+                    aria-label={`View details for ${metal.name}`}
+                  >
                     <div>
                       <div className="font-semibold group-hover:text-foreground transition-colors">{metal.name}</div>
                       <div className="text-sm text-muted-foreground flex items-center gap-2">
@@ -287,7 +296,7 @@ export function MarketsTable({ metals, onMetalClick, onWatchlistToggle }: Market
                         </Badge>
                       </div>
                     </div>
-                  </div>
+                  </button>
                 </TableCell>
                 <TableCell className="text-right font-mono font-semibold tabular-nums">
                   {metal.isMockData ? '-' : formatPrice(metal.price, metal.priceUnit)}

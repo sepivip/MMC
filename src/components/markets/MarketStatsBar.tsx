@@ -15,14 +15,14 @@ export function MarketStatsBar({ metals }: MarketStatsBarProps) {
   // Calculate total market cap (only for real data)
   const totalMarketCap = isMockData ? 0 : metals.reduce((sum, metal) => sum + metal.marketCap, 0);
 
-  // Calculate gold dominance (only for real data)
+  // Calculate gold dominance (only for real data, guard against division by zero)
   const goldMetal = metals.find((m) => m.id === 'gold');
-  const goldDominance = isMockData || !goldMetal
+  const goldDominance = isMockData || !goldMetal || totalMarketCap === 0
     ? '0'
     : ((goldMetal.marketCap / totalMarketCap) * 100).toFixed(1);
 
-  // Calculate weighted average 24h change (only for real data)
-  const weightedChange = isMockData ? 0 : metals.reduce((sum, metal) => {
+  // Calculate weighted average 24h change (only for real data, guard against division by zero)
+  const weightedChange = isMockData || totalMarketCap === 0 ? 0 : metals.reduce((sum, metal) => {
     const weight = metal.marketCap / totalMarketCap;
     return sum + metal.change24h * weight;
   }, 0);
