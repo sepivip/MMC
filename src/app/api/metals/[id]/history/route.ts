@@ -15,6 +15,16 @@ interface HistoryParams {
   params: Promise<{ id: string }>;
 }
 
+// Valid timeframes to prevent invalid queries
+const VALID_TIMEFRAMES: ChartTimeframe[] = ['1D', '7D', '1M', '1Y', 'ALL'];
+
+function validateTimeframe(raw: string | null): ChartTimeframe {
+  if (raw && VALID_TIMEFRAMES.includes(raw as ChartTimeframe)) {
+    return raw as ChartTimeframe;
+  }
+  return '7D'; // Safe default
+}
+
 export async function GET(
   request: Request,
   context: HistoryParams
@@ -22,7 +32,7 @@ export async function GET(
   try {
     const { id } = await context.params;
     const { searchParams } = new URL(request.url);
-    const timeframe = (searchParams.get('timeframe') as ChartTimeframe) || '7D';
+    const timeframe = validateTimeframe(searchParams.get('timeframe'));
 
     const ticker = metalTickers[id];
     if (!ticker) {
@@ -97,7 +107,7 @@ export async function GET(
 
     // Return mock data as fallback, respecting the requested timeframe
     const { searchParams } = new URL(request.url);
-    const timeframe = (searchParams.get('timeframe') as ChartTimeframe) || '7D';
+    const timeframe = validateTimeframe(searchParams.get('timeframe'));
     const mockData = generateMockHistoricalData(timeframe);
     return NextResponse.json(mockData);
   }

@@ -20,8 +20,22 @@ export class MetalPriceService {
     this.fmpProvider = new FMPProvider();
     this.yahooProvider = new YahooProvider();
     this.yahooDirectProvider = new YahooDirectProvider();
-    this.providerType = (process.env.METAL_PRICE_PROVIDER as ProviderType) || 'yahoo';
+    // Normalize provider type to lowercase to handle env vars like 'YAHOO' or 'FMP'
+    const rawProvider = (process.env.METAL_PRICE_PROVIDER || 'yahoo').toLowerCase();
+    this.providerType = this.validateProviderType(rawProvider);
     this.enableFallback = process.env.ENABLE_API_FALLBACK !== 'false';
+  }
+
+  /**
+   * Validate and normalize provider type from environment
+   */
+  private validateProviderType(raw: string): ProviderType {
+    const validTypes: ProviderType[] = ['fmp', 'yahoo', 'yahoo-direct', 'auto'];
+    if (validTypes.includes(raw as ProviderType)) {
+      return raw as ProviderType;
+    }
+    console.warn(`[MetalPriceService] Invalid provider type '${raw}', defaulting to 'yahoo'`);
+    return 'yahoo';
   }
 
   /**
